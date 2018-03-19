@@ -15,15 +15,18 @@ import java.util.ArrayList;
 public class MySqlBasedPatternsService implements PatternsService
 {
     //Queries
-    private static final String CREATE_PATTERN_QUERY = "insert into Pattern(name) values(?);";
-    private static final String GET_PATTERNS_QUERY = "select * from Pattern;";
+    private static final String CREATE_PATTERN_QUERY = "insert into pattern(name) values(?);";
+    private static final String GET_PATTERNS_QUERY = "select * from pattern;";
+    private static final String GET_PATTERN_PARTICIPANTS_QUERY = "select * from patternParticipant where idPattern = ?;";
 
     //Failure messages
     private static final String CREATE_PATTERN_FAILED = "Could not create pattern";
     private static final String GET_PATTERNS_FAILED = "Could not select all patterns";
 
     //Column names
+    private static final String ID = "id";
     private static final String NAME = "name";
+    private static final String DESCRIPTION = "description";
 
     //Database object
     private DatabaseService database;
@@ -69,10 +72,23 @@ public class MySqlBasedPatternsService implements PatternsService
 
             while(rs.next())
             {
-                patterns.add(new Pattern(rs.getString(NAME)));
+                int id = rs.getInt(ID);
+
+                Pattern pattern = new Pattern(id,rs.getString(NAME));
+                PreparedStatement stmt2 = con.prepareStatement(GET_PATTERN_PARTICIPANTS_QUERY);
+                stmt2.setInt(1, id);
+                ResultSet rs2 = stmt2.executeQuery();
+
+                while(rs2.next())
+                {
+                    pattern.addParticipant(rs2.getString(NAME), rs2.getString(DESCRIPTION));
+                }
+
+                patterns.add(pattern);
             }
         }
         catch(Exception e){
+            e.printStackTrace();
             System.out.println(GET_PATTERNS_FAILED);
         }
 

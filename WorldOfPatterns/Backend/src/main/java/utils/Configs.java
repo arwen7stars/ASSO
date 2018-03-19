@@ -1,5 +1,8 @@
 package utils;
 
+import services.database.DatabaseServicesFactory;
+import services.database.MySqlBasedDatabaseServicesFactory;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +22,8 @@ public class Configs
     public static String DB_PASSWORD;
 
     public static String ALLOWED_ORIGINS = "http://projectidealize.me,https://projectidealize.me";
+
+    public static DatabaseServicesFactory databaseServicesFactory;
 
     public static void readConfig(String path)
     {
@@ -50,6 +55,8 @@ public class Configs
 
     public static void setConsts(Properties prop)
     {
+        databaseServicesFactory = MySqlBasedDatabaseServicesFactory.instance();
+
         DB_HOST = prop.getProperty("dbaddr");
         DB_PORT = prop.getProperty("dbport");
         DB_NAME = prop.getProperty("dbname");

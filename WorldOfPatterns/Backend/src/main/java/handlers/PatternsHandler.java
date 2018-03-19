@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import patterns.Pattern;
 import services.patterns.MySqlBasedPatternsService;
 import services.patterns.PatternsService;
+import utils.Configs;
 
 /**
  * Patterns handlers
@@ -14,7 +15,12 @@ import services.patterns.PatternsService;
 @RestController
 public class PatternsHandler {
 
-    PatternsService service = new MySqlBasedPatternsService();
+    private PatternsService service;
+
+    public PatternsHandler()
+    {
+        service = Configs.databaseServicesFactory.createPatternsService();
+    }
 
     @RequestMapping("/patterns")
     public ArrayList<Pattern> getPatterns() {
