@@ -1,12 +1,3 @@
-h2 {
-  text-align: center;
-  color: #357EC7;
-  font-weight: bold;
-  padding: 1em;
-}
-
-.patterns {
-  padding-left: 1em;
-  padding-right: 1em;
-
+.pattern {
+  padding: 2em;
 }

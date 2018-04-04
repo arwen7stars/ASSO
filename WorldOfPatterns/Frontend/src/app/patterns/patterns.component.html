@@ -1,6 +1,21 @@
-<h2>Patterns</h2>
-<ul class="patterns list-group">
-  <li class="list-group-item" *ngFor="let pattern of patterns">
-    <h4>{{pattern.name}}</h4>
-  </li>
-</ul>
+<div class="jumbotron">
+  <div class="container">
+    <h1 class="display-3">Patterns</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-sm-6 col-12" *ngFor="let pattern of patterns">
+      <div class="pattern">
+        <h2>{{pattern.name}}</h2>
+        <dl class="row">
+          <dt class="col-sm-3">Intent</dt>
+          <dd class="col-sm-9">Brief description of pattern.</dd>
+        </dl>
+        <p><a class="btn btn-secondary" routerLink="/pattern/{{pattern.id}}" role="button">View details &raquo;</a></p>
+
+      </div>
+    </div>
+  </div>
+</div>
