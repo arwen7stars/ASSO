@@ -16,4 +16,11 @@ export class PatternService {
     return this.http.get<Pattern[]>(this.patternUrl);
   }
 
+  /** GET hero by id. Will 404 if id not found */
+  getPattern(id: number): Observable<Pattern> {
+    const url = `${this.patternUrl}/${id}`;
+    return this.http.get<Pattern>(url);
+  }
+
+
 }

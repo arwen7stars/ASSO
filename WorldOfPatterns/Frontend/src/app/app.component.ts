@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'World of Patterns';
+
+  getTitle() : string {
+    return this.title;
+  }
 }

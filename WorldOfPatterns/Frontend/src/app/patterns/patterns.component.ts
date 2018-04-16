@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Pattern } from '../pattern';
 import { PatternService } from "../pattern.service";
+import {AppComponent} from "../app.component";
 
 @Component({
   selector: 'app-patterns',
@@ -9,11 +10,16 @@ import { PatternService } from "../pattern.service";
   styleUrls: ['./patterns.component.css']
 })
 export class PatternsComponent implements OnInit {
+  title : string;
   patterns : Pattern[];
 
-  constructor(private patternService: PatternService) { }
+  constructor(
+    private patternService: PatternService,
+    private app: AppComponent
+  ) {}
 
   ngOnInit() {
+    this.title = this.app.getTitle();
     this.getPatterns();
   }
 
