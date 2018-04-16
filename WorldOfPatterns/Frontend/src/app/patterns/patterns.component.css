@@ -1,3 +1,9 @@
 .pattern {
-  padding: 2em;
+  padding: 0em 2em 0.5em 2em;
+  border-bottom: 5px solid #C4C4C4;
+  margin-bottom: 1em;
+}
+
+.pattern h2 {
+  text-align: center;
 }

@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Tajawal');
+
+body {
+  font-family: 'Tajawal', sans-serif;
+}
+
+.jumbotron {
+  background-color: #C5DCE4;
+}
+
+.title_jumbotron {
+  color: #3E7387;
+  text-shadow: 2px 2px white;
+}
