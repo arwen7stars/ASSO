@@ -19,6 +19,7 @@ public class Pattern
     private String knownUses;
     private Map<String, String> participants;
     private Map<Pattern, String> relatedPatterns;
+    private String text;
 
     public Pattern(int id, String name)
     {
@@ -26,6 +27,17 @@ public class Pattern
         this.name = name;
         this.participants = new HashMap<String, String>();
         this.relatedPatterns = new HashMap<Pattern, String>();
+    }
+
+    public Pattern(String name, String text)
+    {
+        this.name = name;
+        this.text = text;
+    }
+
+    public Pattern(String name)
+    {
+        this.name = name;
     }
 
     public String getName()
@@ -116,5 +128,15 @@ public class Pattern
     public void addRelatedPattern(Pattern pattern, String message)
     {
         relatedPatterns.put(pattern, message);
+    }
+
+    public String getText()
+    {
+        return text;
+    }
+
+    public void setText(String text)
+    {
+        this.text = text;
     }
 }

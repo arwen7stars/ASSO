@@ -1,7 +1,7 @@
 package utils;
 
-import services.database.DatabaseServicesFactory;
-import services.database.MySqlBasedDatabaseServicesFactory;
+import services.database.GitBasedServicesFactory;
+import services.database.ServicesFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,10 +21,20 @@ public class Configs
     public static String DB_USERNAME;
     public static String DB_PASSWORD;
 
+    public static String GIT_USER;
+    public static String GIT_PASSWORD;
+    public static String GIT_EMAIL;
+    public static String GIT_REPOSITORY;
+    public static String REPOSITORY_PATH;
+
     public static String ALLOWED_ORIGINS = "http://projectidealize.me,https://projectidealize.me";
 
-    public static DatabaseServicesFactory databaseServicesFactory;
+    public static ServicesFactory servicesFactory;
 
+    /**
+     * Reads configuration file
+     * @param path Path to the configuration file
+     */
     public static void readConfig(String path)
     {
         CONFIG_PATH = path;
@@ -53,15 +63,25 @@ public class Configs
         }
     }
 
+    /**
+     * Set global constants
+     * @param prop Properties object
+     */
     public static void setConsts(Properties prop)
     {
-        databaseServicesFactory = MySqlBasedDatabaseServicesFactory.instance();
+        servicesFactory = GitBasedServicesFactory.instance();
 
         DB_HOST = prop.getProperty("dbaddr");
         DB_PORT = prop.getProperty("dbport");
         DB_NAME = prop.getProperty("dbname");
         DB_USERNAME = prop.getProperty("dbuser");
         DB_PASSWORD = prop.getProperty("dbpass");
+
+        GIT_USER = prop.getProperty("gituser");
+        GIT_PASSWORD = prop.getProperty("gitpassword");
+        GIT_EMAIL = prop.getProperty("gitemail");
+        GIT_REPOSITORY = prop.getProperty("gitrepository");
+        REPOSITORY_PATH = prop.getProperty("repositorypath");
 
         ALLOWED_ORIGINS = prop.getProperty("allowed_origins");
     }

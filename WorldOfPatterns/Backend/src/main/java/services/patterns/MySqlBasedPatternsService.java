@@ -38,7 +38,7 @@ public class MySqlBasedPatternsService implements PatternsService
     }
 
     //Create a Pattern
-    public boolean createPattern(String name)
+    public boolean createPattern(String name, String text)
     {
         Connection con = database.getConnection();
 
@@ -95,5 +95,9 @@ public class MySqlBasedPatternsService implements PatternsService
         database.closeConnection(con);
 
         return patterns;
+    }
+
+    public Pattern getPattern(String name) {
+        return null;
     }
 }
