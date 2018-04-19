@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import patterns.Pattern;
 import services.patterns.PatternsService;
 import utils.Configs;
+import utils.exceptions.PatternCreationFailedException;
+import utils.exceptions.PatternNotFoundException;
 
 /**
  * Patterns handlers
@@ -37,17 +39,21 @@ public class PatternsHandler {
      * @return The pattern requested
      */
     @RequestMapping("/patterns/{name}")
-    public Pattern getPattern(@PathVariable("name") String name) {
+    public Pattern getPattern(@PathVariable("name") String name) throws PatternNotFoundException {
         return service.getPattern(name);
     }
 
     /**
      * Add a new pattern
      * @param name Name of the new pattern
-     * @param content Content of the new pattern
+     * @param markdown Markdown of the new pattern
      */
     @RequestMapping(value = "/patterns/{name}", method = RequestMethod.POST)
-    public void updatePattern(@PathVariable("name") String name, @RequestParam("content") String content) {
-        service.createPattern(name, content);
+    public Pattern updatePattern(@PathVariable("name") String name, @RequestParam("markdown") String markdown, @RequestParam(value = "message", required = false) String message)
+            throws PatternCreationFailedException, PatternNotFoundException {
+        if(message == null)
+            return service.createPattern(name, markdown);
+        else
+            return service.updatePattern(name, markdown, message);
     }
 }

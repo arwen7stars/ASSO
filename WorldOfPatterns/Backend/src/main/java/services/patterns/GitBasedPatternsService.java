@@ -2,6 +2,8 @@ package services.patterns;
 
 import patterns.Pattern;
 import services.git.MyGitHubService;
+import utils.exceptions.PatternCreationFailedException;
+import utils.exceptions.PatternNotFoundException;
 
 import java.util.*;
 
@@ -44,9 +46,10 @@ public class GitBasedPatternsService implements PatternsService{
      * Get a pattern
      * @param name Name of the requested pattern
      * @return The pattern requested
+     * @throws PatternNotFoundException When pattern does not exist
      */
-    public Pattern getPattern(String name) {
-        Pattern pattern = null;
+    public Pattern getPattern(String name) throws PatternNotFoundException {
+        Pattern pattern;
 
         String content = gitHubService.getFileContent(PATTERNS_PATH + name + FILE_FORMAT);
 
@@ -54,8 +57,12 @@ public class GitBasedPatternsService implements PatternsService{
             String html = gitHubService.getHtmlFromMarkdown(content);
 
             if(html != null)
-                pattern = new Pattern(name, html);
+                pattern = new Pattern(name, html, content);
+            else
+                throw new PatternNotFoundException();
         }
+        else
+            throw new PatternNotFoundException();
 
         return pattern;
     }
@@ -63,10 +70,30 @@ public class GitBasedPatternsService implements PatternsService{
     /**
      * Create a pattern
      * @param name Pattern name
-     * @param content Pattern content
-     * @return True if pattern successfully created. False otherwise
+     * @param markdown Pattern markdown
+     * @return The created pattern if successful. null otherwise
+     * @throws PatternCreationFailedException When pattern already exists
      */
-    public boolean createPattern(String name, String content) {
-        return gitHubService.commit(PATTERNS_PATH + name + FILE_FORMAT, content, PATTERN_CREATION_MESSAGE);
+    public Pattern createPattern(String name, String markdown) throws PatternCreationFailedException {
+        try {
+            getPattern(name);
+            throw new PatternCreationFailedException();
+        }
+        catch(PatternNotFoundException ex) {
+            gitHubService.commit(PATTERNS_PATH + name + FILE_FORMAT, markdown, PATTERN_CREATION_MESSAGE);
+        }
+
+        try {
+            return getPattern(name);
+        }
+        catch(PatternNotFoundException ex) {
+            throw new PatternCreationFailedException();
+        }
+    }
+
+    public Pattern updatePattern(String name, String markdown, String message) throws PatternNotFoundException {
+        getPattern(name);
+        gitHubService.commit(PATTERNS_PATH + name + FILE_FORMAT, markdown, message);
+        return getPattern(name);
     }
 }

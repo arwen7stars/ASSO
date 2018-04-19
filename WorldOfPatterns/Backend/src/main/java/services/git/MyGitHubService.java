@@ -49,10 +49,10 @@ public class MyGitHubService {
 
         commitService = new CommitService(client);
         dataService = new DataService(client);
-        markdownService = new MarkdownService();
+        markdownService = new MarkdownService(client);
 
-        repositoryService = new RepositoryService();
-        contentsService = new ContentsService();
+        repositoryService = new RepositoryService(client);
+        contentsService = new ContentsService(client);
 
         try {
             repository = repositoryService.getRepository(user, repositoryName);

@@ -7,7 +7,7 @@ import services.patterns.PatternsService;
  * Database Services Factory using MySQL services
  * This is a singleton
  */
-public class MySqlBasedServicesFactory implements ServicesFactory
+public class MySqlBasedServicesFactory
 {
     protected MySqlBasedServicesFactory() {}
 
@@ -15,11 +15,11 @@ public class MySqlBasedServicesFactory implements ServicesFactory
         return new MySqlBasedDatabaseService();
     }
 
-    public PatternsService createPatternsService() {
+    public MySqlBasedPatternsService createPatternsService() {
         return new MySqlBasedPatternsService();
     }
 
-    public static ServicesFactory instance()
+    public static MySqlBasedServicesFactory instance()
     {
         return new MySqlBasedServicesFactory();
     }

@@ -19,7 +19,8 @@ public class Pattern
     private String knownUses;
     private Map<String, String> participants;
     private Map<Pattern, String> relatedPatterns;
-    private String text;
+    private String html;
+    private String markdown;
 
     public Pattern(int id, String name)
     {
@@ -29,10 +30,11 @@ public class Pattern
         this.relatedPatterns = new HashMap<Pattern, String>();
     }
 
-    public Pattern(String name, String text)
+    public Pattern(String name, String html, String markdown)
     {
         this.name = name;
-        this.text = text;
+        this.html = html;
+        this.markdown = markdown;
     }
 
     public Pattern(String name)
@@ -130,13 +132,23 @@ public class Pattern
         relatedPatterns.put(pattern, message);
     }
 
-    public String getText()
+    public String getHtml()
     {
-        return text;
+        return html;
     }
 
-    public void setText(String text)
+    public void setHtml(String html)
     {
-        this.text = text;
+        this.html = html;
+    }
+
+    public String getMarkdown()
+    {
+        return markdown;
+    }
+
+    public void setMarkdown(String markdown)
+    {
+        this.markdown = markdown;
     }
 }

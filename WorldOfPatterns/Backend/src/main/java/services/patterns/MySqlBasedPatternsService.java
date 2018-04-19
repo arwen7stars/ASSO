@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Patterns Service using MySQL
  */
-public class MySqlBasedPatternsService implements PatternsService
+public class MySqlBasedPatternsService
 {
     //Queries
     private static final String CREATE_PATTERN_QUERY = "insert into pattern(name) values(?);";
@@ -38,7 +38,7 @@ public class MySqlBasedPatternsService implements PatternsService
     }
 
     //Create a Pattern
-    public boolean createPattern(String name, String text)
+    public Pattern createPattern(String name, String text)
     {
         Connection con = database.getConnection();
 
@@ -56,7 +56,7 @@ public class MySqlBasedPatternsService implements PatternsService
 
         database.closeConnection(con);
 
-        return res;
+        return null;
     }
 
     //Get all patterns
