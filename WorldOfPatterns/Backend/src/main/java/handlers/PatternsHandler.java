@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +13,7 @@ import patterns.UpdatePatternContent;
 import services.git.CommitBasicInfo;
 import services.patterns.PatternsService;
 import utils.Configs;
+import utils.exceptions.OldRevisionNotFound;
 import utils.exceptions.PatternCreationFailedException;
 import utils.exceptions.PatternNotFoundException;
 
@@ -38,9 +37,10 @@ public class PatternsHandler {
     /**
      * Get all the patterns
      * @return List of patterns
+     * @throws PatternNotFoundException When the patterns path is invalid
      */
     @RequestMapping(value = "/patterns", method = RequestMethod.GET)
-    public ArrayList<Pattern> getPatterns() {
+    public ArrayList<Pattern> getPatterns() throws PatternNotFoundException {
         return service.getPatterns();
     }
 
@@ -98,6 +98,18 @@ public class PatternsHandler {
     @RequestMapping(value = "/patterns/{name}/history", method = RequestMethod.GET)
     public List<CommitBasicInfo> getPatternHistory(@PathVariable("name") String name) throws PatternNotFoundException {
         return service.getPatternHistory(name);
+    }
+
+    /**
+     * Get an old revision of the pattern
+     * @param name The name of the pattern
+     * @param sha The sha associated with the revision
+     * @return The old revision of the pattern
+     * @throws OldRevisionNotFound When the old revision does not exist or the pattern is not found
+     */
+    @RequestMapping(value = "/patterns/{name}/history/{sha}", method = RequestMethod.GET)
+    public Pattern getPatternOldRevision(@PathVariable("name") String name, @PathVariable("sha") String sha) throws OldRevisionNotFound {
+        return service.getPatternOldRevision(name, sha);
     }
 
     @ExceptionHandler

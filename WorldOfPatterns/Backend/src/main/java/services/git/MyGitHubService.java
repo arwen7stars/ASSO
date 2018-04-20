@@ -1,5 +1,6 @@
 package services.git;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.*;
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -69,20 +70,16 @@ public class MyGitHubService {
      * Get the repository contents
      * @param path Path to get contents from
      * @return List of file names inside the directory at path
+     * @throws IOException When the path is invalid
      */
-    public ArrayList<String> getRepositoryContents(String path) {
+    public ArrayList<String> getRepositoryContents(String path) throws IOException {
         ArrayList<String> res = new ArrayList<>();
 
-        try {
-            List<RepositoryContents> contents = contentsService.getContents(repository, path);
+        List<RepositoryContents> contents = contentsService.getContents(repository, path);
 
-            for(RepositoryContents c: contents) {
-                String name = c.getName();
-                res.add(name);
-            }
-        }
-        catch(IOException ex) {
-            System.out.println(ex.getMessage());
+        for(RepositoryContents c: contents) {
+            String name = c.getName();
+            res.add(name);
         }
 
         return res;
@@ -92,19 +89,15 @@ public class MyGitHubService {
      * Get file content
      * @param path Path to the file
      * @return The file content
+     * @throws IOException When the path is invalid
      */
-    public String getFileContent(String path) {
+    public String getFileContent(String path) throws IOException {
         String res = null;
 
-        try {
-            List<RepositoryContents> contents = contentsService.getContents(repository, path);
+        List<RepositoryContents> contents = contentsService.getContents(repository, path);
 
-            for(RepositoryContents c: contents) {
-                res = new String(Base64.decodeBase64(c.getContent().getBytes()));
-            }
-        }
-        catch(IOException ex) {
-            System.out.println(ex.getMessage());
+        for(RepositoryContents c: contents) {
+            res = new String(Base64.decodeBase64(c.getContent().getBytes()));
         }
 
         return res;
@@ -114,17 +107,10 @@ public class MyGitHubService {
      * Get HTML markup from given markdown
      * @param markdown Markdown to be translated
      * @return String containing HTML code
+     * @throws IOException When the file cannot be converted to HTML
      */
-    public String getHtmlFromMarkdown(String markdown) {
-        String res = null;
-
-        try {
-            res = markdownService.getHtml(markdown,MARKDOWN);
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-
-        return res;
+    public String getHtmlFromMarkdown(String markdown) throws IOException{
+        return markdownService.getHtml(markdown,MARKDOWN);
     }
 
     /**
@@ -200,6 +186,7 @@ public class MyGitHubService {
      * Gets commits at a given path in the repository
      * @param path The path in the repository to parse commits in
      * @return List of Commits with message and date
+     * @throws IOException When the path is invalid
      */
     public List<CommitBasicInfo> getRepositoryCommits(String path) throws IOException {
         ArrayList<CommitBasicInfo> res = new ArrayList<>();
@@ -210,7 +197,27 @@ public class MyGitHubService {
             Commit c = commit.getCommit();
             String message = c.getMessage();
             String date = dateFormatter.format(c.getAuthor().getDate());
-            res.add(new CommitBasicInfo(message, date));
+            String sha = commit.getSha();
+            res.add(new CommitBasicInfo(message, date, sha));
+        }
+
+        return res;
+    }
+
+    /**
+     * Get an old revision of a file
+     * @param path The path to the file
+     * @param sha The sha of the revision
+     * @return The old revision's content
+     * @throws IOException When the revision does not exist or the path is invalid
+     */
+    public String getOldFileRevisionContent(String path, String sha) throws IOException {
+        String res = null;
+
+        List<RepositoryContents> contents = contentsService.getContents(repository, path, sha);
+
+        for(RepositoryContents c: contents) {
+            res = new String(Base64.decodeBase64(c.getContent().getBytes()));
         }
 
         return res;

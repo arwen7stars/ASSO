@@ -18,4 +18,6 @@ public interface PatternsService {
     Pattern updatePattern(String name, String markdown, String message) throws PatternNotFoundException;
 
     List<CommitBasicInfo> getPatternHistory(String name) throws PatternNotFoundException;
+
+    Pattern getPatternOldRevision(String name, String sha) throws PatternNotFoundException;
 }
