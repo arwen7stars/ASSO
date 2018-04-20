@@ -2,6 +2,7 @@ package handlers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import patterns.Pattern;
 import patterns.UpdatePatternContent;
+import services.git.CommitBasicInfo;
 import services.patterns.PatternsService;
 import utils.Configs;
 import utils.exceptions.PatternCreationFailedException;
@@ -46,10 +48,10 @@ public class PatternsHandler {
      * Get a pattern
      * @param name Name of the pattern
      * @return The pattern requested
+     * @throws PatternNotFoundException When the pattern does not exist
      */
     @RequestMapping(value = "/patterns/{name}", method = RequestMethod.GET)
     public Pattern getPattern(@PathVariable("name") String name) throws PatternNotFoundException {
-        System.out.println("asd");
         return service.getPattern(name);
     }
 
@@ -57,10 +59,12 @@ public class PatternsHandler {
      * Add a new pattern
      * @param name Name of the new pattern
      * @param content Content object containing the markdown of the new pattern
+     * @throws PatternCreationFailedException When the pattern already exists
+     * @throws IOException When there is a problem reading the content
      */
     @RequestMapping(value = "/patterns/{name}", method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Pattern createPattern(@PathVariable("name") String name, @RequestBody String content)
-            throws PatternCreationFailedException, PatternNotFoundException, IOException {
+            throws PatternCreationFailedException, IOException {
 
         UpdatePatternContent patternContent = new ObjectMapper().readValue(content, UpdatePatternContent.class);
 
@@ -71,16 +75,29 @@ public class PatternsHandler {
      * Update a requested pattern
      * @param name Name of the pattern to update
      * @param content Content object containing the markdown of the updated pattern and a message
+     * @throws PatternNotFoundException When the pattern is not found
+     * @throws IOException When there is a problem reading the content
      */
     @RequestMapping(value = "/patterns/{name}", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Pattern updatePattern(@PathVariable("name") String name, @RequestBody String content)
-            throws PatternCreationFailedException, PatternNotFoundException, IOException {
+            throws PatternNotFoundException, IOException {
 
         UpdatePatternContent patternContent = new ObjectMapper().readValue(content, UpdatePatternContent.class);
 
         if(patternContent.getMessage() != null)
             service.updatePattern(name, patternContent.getMarkdown(), patternContent.getMessage());
         throw new IllegalArgumentException();
+    }
+
+    /**
+     * Get pattern history
+     * @param name Name of the pattern to check history for
+     * @return The pattern history (commit messages and dates)
+     * @throws PatternNotFoundException When the pattern does not exist
+     */
+    @RequestMapping(value = "/patterns/{name}/history", method = RequestMethod.GET)
+    public List<CommitBasicInfo> getPatternHistory(@PathVariable("name") String name) throws PatternNotFoundException {
+        return service.getPatternHistory(name);
     }
 
     @ExceptionHandler

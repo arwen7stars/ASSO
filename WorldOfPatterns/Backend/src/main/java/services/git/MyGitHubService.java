@@ -6,6 +6,7 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.*;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -17,6 +18,8 @@ import java.util.List;
 public class MyGitHubService {
     private static final String MARKDOWN = "markdown";
     private static final String HEAD_MASTER = "heads/master";
+
+    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 
     private String user;
     private String password;
@@ -188,6 +191,26 @@ public class MyGitHubService {
             res = true;
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+        }
+
+        return res;
+    }
+
+    /**
+     * Gets commits at a given path in the repository
+     * @param path The path in the repository to parse commits in
+     * @return List of Commits with message and date
+     */
+    public List<CommitBasicInfo> getRepositoryCommits(String path) throws IOException {
+        ArrayList<CommitBasicInfo> res = new ArrayList<>();
+
+        List<RepositoryCommit> commits = commitService.getCommits(repository, null, path);
+
+        for(RepositoryCommit commit: commits) {
+            Commit c = commit.getCommit();
+            String message = c.getMessage();
+            String date = dateFormatter.format(c.getAuthor().getDate());
+            res.add(new CommitBasicInfo(message, date));
         }
 
         return res;

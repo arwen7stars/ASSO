@@ -1,10 +1,12 @@
 package services.patterns;
 
 import patterns.Pattern;
+import services.git.CommitBasicInfo;
 import services.git.MyGitHubService;
 import utils.exceptions.PatternCreationFailedException;
 import utils.exceptions.PatternNotFoundException;
 
+import java.io.IOException;
 import java.util.*;
 
 import static utils.Configs.*;
@@ -103,5 +105,26 @@ public class GitBasedPatternsService implements PatternsService{
         getPattern(name);
         gitHubService.commit(PATTERNS_PATH + name + FILE_FORMAT, markdown, message);
         return getPattern(name);
+    }
+
+    /**
+     * Get pattern history
+     * @param name The name of the pattern to check history for
+     * @return The pattern history as a list of commits with message and date
+     * @throws PatternNotFoundException When the pattern does not exist
+     */
+    public List<CommitBasicInfo> getPatternHistory(String name) throws PatternNotFoundException {
+        try {
+            List<CommitBasicInfo> res = gitHubService.getRepositoryCommits(PATTERNS_PATH + name + FILE_FORMAT);
+
+            if(res.size() == 0) {
+                throw new PatternNotFoundException();
+            }
+
+            return res;
+        }
+        catch(IOException ex) {
+            throw new PatternNotFoundException();
+        }
     }
 }
