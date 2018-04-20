@@ -91,6 +91,14 @@ public class GitBasedPatternsService implements PatternsService{
         }
     }
 
+    /**
+     * Update a pattern
+     * @param name The name of the pattern to update
+     * @param markdown The new markdown
+     * @param message The update message
+     * @return The updated pattern
+     * @throws PatternNotFoundException When the pattern is not found
+     */
     public Pattern updatePattern(String name, String markdown, String message) throws PatternNotFoundException {
         getPattern(name);
         gitHubService.commit(PATTERNS_PATH + name + FILE_FORMAT, markdown, message);
