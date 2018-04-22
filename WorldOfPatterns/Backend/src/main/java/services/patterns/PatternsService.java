@@ -11,13 +11,13 @@ import java.util.List;
 public interface PatternsService {
     ArrayList<Pattern> getPatterns();
 
-    Pattern getPattern(String name) throws PatternNotFoundException;
+    Pattern getPattern(int id) throws PatternNotFoundException;
 
     Pattern createPattern(String name, String markdown) throws PatternCreationFailedException;
 
-    Pattern updatePattern(String name, String markdown, String message) throws PatternNotFoundException;
+    Pattern updatePattern(int id, String markdown, String message) throws PatternNotFoundException;
 
-    List<CommitBasicInfo> getPatternHistory(String name) throws PatternNotFoundException;
+    List<CommitBasicInfo> getPatternHistory(int id) throws PatternNotFoundException;
 
-    Pattern getPatternOldRevision(String name, String sha) throws PatternNotFoundException;
+    Pattern getPatternOldRevision(int id, String sha) throws PatternNotFoundException;
 }

@@ -1,6 +1,7 @@
 package services.patterns;
 
 import patterns.Pattern;
+import services.database.MySqlBasedDatabaseService;
 import services.git.CommitBasicInfo;
 import services.git.MyGitHubService;
 import utils.exceptions.OldRevisionNotFound;
@@ -8,6 +9,7 @@ import utils.exceptions.PatternCreationFailedException;
 import utils.exceptions.PatternNotFoundException;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 import static utils.Configs.*;
@@ -21,29 +23,27 @@ public class GitBasedPatternsService implements PatternsService{
     private static final String FILE_FORMAT = ".md";
 
     private MyGitHubService gitHubService;
+    private MySqlBasedPatternsService mySqlService;
 
     /**
      * Constructor. Sets up the GitHub service
      */
     public GitBasedPatternsService() {
         gitHubService = new MyGitHubService(GIT_USER, GIT_PASSWORD, GIT_EMAIL, GIT_REPOSITORY);
+        mySqlService = new MySqlBasedPatternsService();
     }
 
     /**
      * Get all patterns
      * @return List of patterns
-     * @throws PatternNotFoundException When the path to the patterns is invalid
+     * @throws PatternNotFoundException When the patterns query fails
      */
     public ArrayList<Pattern> getPatterns() throws PatternNotFoundException {
-        ArrayList<Pattern> patterns = new ArrayList<>();
+        ArrayList<Pattern> patterns;
 
         try {
-            ArrayList<String> res = gitHubService.getRepositoryContents(PATTERNS_PATH);
-
-            for(String name: res) {
-                patterns.add(new Pattern(name.replaceAll(FILE_FORMAT, "")));
-            }
-        } catch (IOException ex) {
+            patterns = mySqlService.getPatterns();
+        } catch (SQLException ex) {
             throw new PatternNotFoundException();
         }
 
@@ -52,17 +52,18 @@ public class GitBasedPatternsService implements PatternsService{
 
     /**
      * Get a pattern
-     * @param name Name of the requested pattern
+     * @param id ID of the requested pattern
      * @return The pattern requested
      * @throws PatternNotFoundException When pattern does not exist
      */
-    public Pattern getPattern(String name) throws PatternNotFoundException {
+    public Pattern getPattern(int id) throws PatternNotFoundException {
         try {
-            String content = gitHubService.getFileContent(PATTERNS_PATH + name + FILE_FORMAT);
+            Pattern pattern = mySqlService.getPattern(id);
+            String content = gitHubService.getFileContent(PATTERNS_PATH + id + FILE_FORMAT);
 
-            return generatePattern(name, content);
+            return generatePattern(id, pattern.getName(), content);
         }
-        catch (IOException ex) {
+        catch (Exception ex) {
             throw new PatternNotFoundException();
         }
     }
@@ -76,44 +77,45 @@ public class GitBasedPatternsService implements PatternsService{
      */
     public Pattern createPattern(String name, String markdown) throws PatternCreationFailedException {
         try {
-            getPattern(name);
-            throw new PatternCreationFailedException();
+            System.out.println(name);
+            System.out.println(markdown);
+            int id = mySqlService.createPattern(name);
+            gitHubService.commit(PATTERNS_PATH + id + FILE_FORMAT, markdown, PATTERN_CREATION_MESSAGE);
+            return getPattern(id);
         }
-        catch(PatternNotFoundException ex) {
-            gitHubService.commit(PATTERNS_PATH + name + FILE_FORMAT, markdown, PATTERN_CREATION_MESSAGE);
-        }
-
-        try {
-            return getPattern(name);
-        }
-        catch(PatternNotFoundException ex) {
+        catch(Exception ex) {
+            mySqlService.rollbackChanges();
             throw new PatternCreationFailedException();
         }
     }
 
     /**
      * Update a pattern
-     * @param name The name of the pattern to update
+     * @param id The name of the pattern to update
      * @param markdown The new markdown
      * @param message The update message
      * @return The updated pattern
      * @throws PatternNotFoundException When the pattern is not found
      */
-    public Pattern updatePattern(String name, String markdown, String message) throws PatternNotFoundException {
-        getPattern(name);
-        gitHubService.commit(PATTERNS_PATH + name + FILE_FORMAT, markdown, message);
-        return getPattern(name);
+    public Pattern updatePattern(int id, String markdown, String message) throws PatternNotFoundException {
+        try {
+            getPattern(id);
+            gitHubService.commit(PATTERNS_PATH + id + FILE_FORMAT, markdown, message);
+            return getPattern(id);
+        } catch (IOException ex) {
+            throw new PatternNotFoundException();
+        }
     }
 
     /**
      * Get pattern history
-     * @param name The name of the pattern to check history for
+     * @param id The id of the pattern to check history for
      * @return The pattern history as a list of commits with message and date
      * @throws PatternNotFoundException When the pattern does not exist
      */
-    public List<CommitBasicInfo> getPatternHistory(String name) throws PatternNotFoundException {
+    public List<CommitBasicInfo> getPatternHistory(int id) throws PatternNotFoundException {
         try {
-            List<CommitBasicInfo> res = gitHubService.getRepositoryCommits(PATTERNS_PATH + name + FILE_FORMAT);
+            List<CommitBasicInfo> res = gitHubService.getRepositoryCommits(PATTERNS_PATH + id + FILE_FORMAT);
 
             if(res.size() == 0) {
                 throw new PatternNotFoundException();
@@ -128,16 +130,19 @@ public class GitBasedPatternsService implements PatternsService{
 
     /**
      * Get pattern old revision
-     * @param name The name of the pattern
+     * @param id The id of the pattern
      * @param sha The sha ref of the pattern
      * @return The old revision of the pattern
-     * @throws OldRevisionNotFound When the pattern does not exist or the sha is invalid
+     * @throws OldRevisionNotFound When the the sha is invalid
+     * @throws PatternNotFoundException When the pattern does not exist
      */
-    public Pattern getPatternOldRevision(String name, String sha) throws OldRevisionNotFound {
+    public Pattern getPatternOldRevision(int id, String sha) throws OldRevisionNotFound, PatternNotFoundException {
         try {
-            String content = gitHubService.getOldFileRevisionContent(PATTERNS_PATH + name + FILE_FORMAT, sha);
+            Pattern pattern = getPattern(id);
 
-            return generatePattern(name, content);
+            String content = gitHubService.getOldFileRevisionContent(PATTERNS_PATH + id + FILE_FORMAT, sha);
+
+            return generatePattern(id, pattern.getName(), content);
         }
         catch (IOException ex) {
             throw new OldRevisionNotFound();
@@ -151,12 +156,12 @@ public class GitBasedPatternsService implements PatternsService{
      * @return The pattern with markdown and html
      * @throws IOException When the content does not exist or no html can be obtained
      */
-    public Pattern generatePattern(String name, String content) throws IOException {
+    public Pattern generatePattern(int id, String name, String content) throws IOException {
         if(content != null) {
             String html = gitHubService.getHtmlFromMarkdown(content);
 
             if (html != null) {
-                return new Pattern(name, html, content);
+                return new Pattern(id, name, html, content);
             } else {
                 throw new IOException();
             }

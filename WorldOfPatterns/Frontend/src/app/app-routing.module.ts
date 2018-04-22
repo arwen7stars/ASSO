@@ -11,10 +11,10 @@ import {PatternRevisionComponent} from "./pattern-revision/pattern-revision.comp
 const routes: Routes = [
   { path: '', redirectTo: '/patterns', pathMatch: 'full' },
   { path: 'patterns', component: PatternsComponent },
-  { path: 'pattern/:name', component: PatternDetailComponent },
-  { path: 'pattern/:name/edit', component: EditPatternComponent },
-  { path: 'pattern/:name/history', component: PatternHistoryComponent },
-  { path: 'pattern/:name/history/:sha', component: PatternRevisionComponent },
+  { path: 'pattern/:id', component: PatternDetailComponent },
+  { path: 'pattern/:id/edit', component: EditPatternComponent },
+  { path: 'pattern/:id/history', component: PatternHistoryComponent },
+  { path: 'pattern/:id/history/:sha', component: PatternRevisionComponent },
   { path: 'addPattern', component: AddPatternComponent }
 ];
 

@@ -30,15 +30,15 @@ export class PatternDetailComponent implements OnInit {
   }
 
   getPattern(): void {
-    const name = this.route.snapshot.paramMap.get('name');
-    this.patternService.getPattern(name).subscribe(pattern => {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.patternService.getPattern(id).subscribe(pattern => {
       this.pattern = pattern;
       this.getRevisionHistory();
     });
   }
 
   getRevisionHistory(): void {
-    this.patternService.getPatternHistory(this.pattern.name)
+    this.patternService.getPatternHistory(this.pattern.id)
       .subscribe(revisions => {
         this.revisions = revisions;
         var date = this.patternService.getLastModified(revisions);

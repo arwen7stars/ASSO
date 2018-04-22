@@ -10,7 +10,7 @@ import {PatternRevision} from "../pattern-revision";
   styleUrls: ['./pattern-history.component.css']
 })
 export class PatternHistoryComponent implements OnInit {
-  pattern_name : string;
+  pattern_id : number;
   revisions : PatternRevision[];
 
   constructor(
@@ -28,8 +28,8 @@ export class PatternHistoryComponent implements OnInit {
   }
 
   getPatternHistory() : void {
-    this.pattern_name = this.route.snapshot.paramMap.get('name');
-    this.patternService.getPatternHistory(this.pattern_name)
+    this.pattern_id = +this.route.snapshot.paramMap.get('id');
+    this.patternService.getPatternHistory(this.pattern_id)
       .subscribe(revisions => {
         this.revisions = revisions;
       });

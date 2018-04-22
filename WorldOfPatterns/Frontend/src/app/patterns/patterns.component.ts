@@ -35,7 +35,7 @@ export class PatternsComponent implements OnInit {
     for(var i = 0; i < this.patterns.length; i++) {
       var revisions = new Array();
 
-      this.patternService.getPatternHistory(this.patterns[i].name)
+      this.patternService.getPatternHistory(this.patterns[i].id)
         .subscribe(function (i, result) {
           revisions = result;
           this.patterns[i].lastModified = this.patternService.getLastModified(revisions).toUTCString();

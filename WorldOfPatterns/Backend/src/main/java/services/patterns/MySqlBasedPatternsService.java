@@ -4,9 +4,11 @@ import patterns.Pattern;
 import services.database.DatabaseService;
 import services.database.MySqlBasedDatabaseService;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -16,8 +18,10 @@ public class MySqlBasedPatternsService
 {
     //Queries
     private static final String CREATE_PATTERN_QUERY = "insert into pattern(name) values(?);";
+    private static final String GET_LAST_PATTERN_ID = "SELECT LAST_INSERT_ID() AS id;";
     private static final String GET_PATTERNS_QUERY = "select * from pattern;";
-    private static final String GET_PATTERN_PARTICIPANTS_QUERY = "select * from patternParticipant where idPattern = ?;";
+    private static final String GET_PATTERN_QUERY = "select * from pattern where id = ?;";
+    private static final String DELETE_PATTERN_QUERY = "delete * from where id = ?";
 
     //Failure messages
     private static final String CREATE_PATTERN_FAILED = "Could not create pattern";
@@ -26,7 +30,6 @@ public class MySqlBasedPatternsService
     //Column names
     private static final String ID = "id";
     private static final String NAME = "name";
-    private static final String DESCRIPTION = "description";
 
     //Database object
     private DatabaseService database;
@@ -38,58 +41,44 @@ public class MySqlBasedPatternsService
     }
 
     //Create a Pattern
-    public Pattern createPattern(String name, String text)
+    public int createPattern(String name) throws Exception
     {
+        int res;
+
         Connection con = database.getConnection();
 
-        boolean res = false;
+        PreparedStatement stmt = con.prepareStatement(CREATE_PATTERN_QUERY);
+        stmt.setString(1, name);
+        stmt.execute();
 
-        try{
-            PreparedStatement stmt = con.prepareStatement(CREATE_PATTERN_QUERY);
-            stmt.setString(1, name);
-            stmt.execute();
+        PreparedStatement stmt2 = con.prepareStatement(GET_LAST_PATTERN_ID);
+        ResultSet rs = stmt2.executeQuery();
+
+        if(rs.next()) {
+            res = rs.getInt(ID);
         }
-        catch(Exception e){
-            System.out.println(CREATE_PATTERN_FAILED);
-            res = false;
+        else {
+            throw new Exception();
         }
 
         database.closeConnection(con);
 
-        return null;
+        return res;
     }
 
     //Get all patterns
-    public ArrayList<Pattern> getPatterns()
+    public ArrayList<Pattern> getPatterns() throws SQLException
     {
         Connection con = database.getConnection();
 
         ArrayList<Pattern> patterns = new ArrayList<>();
 
-        try{
-            PreparedStatement stmt = con.prepareStatement(GET_PATTERNS_QUERY);
-            ResultSet rs = stmt.executeQuery();
+        PreparedStatement stmt = con.prepareStatement(GET_PATTERNS_QUERY);
+        ResultSet rs = stmt.executeQuery();
 
-            while(rs.next())
-            {
-                int id = rs.getInt(ID);
-
-                Pattern pattern = new Pattern(id,rs.getString(NAME));
-                PreparedStatement stmt2 = con.prepareStatement(GET_PATTERN_PARTICIPANTS_QUERY);
-                stmt2.setInt(1, id);
-                ResultSet rs2 = stmt2.executeQuery();
-
-                while(rs2.next())
-                {
-                    pattern.addParticipant(rs2.getString(NAME), rs2.getString(DESCRIPTION));
-                }
-
-                patterns.add(pattern);
-            }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            System.out.println(GET_PATTERNS_FAILED);
+        while(rs.next())
+        {
+            patterns.add(new Pattern(rs.getInt(ID), rs.getString(NAME)));
         }
 
         database.closeConnection(con);
@@ -97,7 +86,44 @@ public class MySqlBasedPatternsService
         return patterns;
     }
 
-    public Pattern getPattern(String name) {
-        return null;
+    public Pattern getPattern(int id) throws SQLException {
+        Connection con = database.getConnection();
+
+        Pattern pattern = null;
+
+        PreparedStatement stmt = con.prepareStatement(GET_PATTERN_QUERY);
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+
+        if(rs.next())
+        {
+            pattern = new Pattern(rs.getInt(ID), rs.getString(NAME));
+        }
+
+        database.closeConnection(con);
+
+        return pattern;
+    }
+
+    public void rollbackChanges(){
+        Connection con = database.getConnection();
+
+        try {
+            PreparedStatement stmt = con.prepareStatement(GET_LAST_PATTERN_ID);
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next())
+            {
+                int id = rs.getInt(ID);
+
+                PreparedStatement stmt2 = con.prepareStatement(DELETE_PATTERN_QUERY);
+                stmt2.setInt(1, id);
+                stmt2.execute();
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        database.closeConnection(con);
     }
 }

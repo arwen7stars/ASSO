@@ -8,7 +8,5 @@ import services.patterns.PatternsService;
  */
 public interface ServicesFactory
 {
-    //DatabaseService createDatabaseService();
-
     PatternsService createPatternsService();
 }

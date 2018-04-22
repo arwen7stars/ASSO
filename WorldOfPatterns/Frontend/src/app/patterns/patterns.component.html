@@ -9,7 +9,7 @@
   <div class="row">
     <div class="col-md-4 col-sm-6 col-12" *ngFor="let pattern of patterns">
       <div class="pattern">
-        <h2><a routerLink="/pattern/{{pattern.name}}">{{pattern.name}}</a></h2>
+        <h2><a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a></h2>
 
         <div class="last-mod-wrapper">
           <span class="last-mod-label">Last revision: </span> {{ pattern.lastModified }}

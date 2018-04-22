@@ -120,66 +120,57 @@ public class MyGitHubService {
      * @param message Commit message
      * @return True if commit successful. False otherwise
      */
-    public boolean commit(String path, String content, String message) {
-        boolean res = false;
+    public void commit(String path, String content, String message)  throws IOException {
+        // get some sha's from current state in git
+        String baseCommitSha = repositoryService.getBranches(repository).get(0).getCommit().getSha();
+        RepositoryCommit baseCommit = commitService.getCommit(repository, baseCommitSha);
+        String treeSha = baseCommit.getSha();
 
-        try {
-            // get some sha's from current state in git
-            String baseCommitSha = repositoryService.getBranches(repository).get(0).getCommit().getSha();
-            RepositoryCommit baseCommit = commitService.getCommit(repository, baseCommitSha);
-            String treeSha = baseCommit.getSha();
+        // create new blob with data
+        Blob blob = new Blob();
+        blob.setContent(content).setEncoding(Blob.ENCODING_UTF8);
+        String blob_sha = dataService.createBlob(repository, blob);
+        Tree baseTree = dataService.getTree(repository, treeSha);
 
-            // create new blob with data
-            Blob blob = new Blob();
-            blob.setContent(content).setEncoding(Blob.ENCODING_UTF8);
-            String blob_sha = dataService.createBlob(repository, blob);
-            Tree baseTree = dataService.getTree(repository, treeSha);
+        // create new tree entry
+        TreeEntry treeEntry = new TreeEntry();
+        treeEntry.setPath(path);
+        treeEntry.setMode(TreeEntry.MODE_BLOB);
+        treeEntry.setType(TreeEntry.TYPE_BLOB);
+        treeEntry.setSha(blob_sha);
+        treeEntry.setSize(blob.getContent().length());
+        Collection<TreeEntry> entries = new ArrayList<>();
+        entries.add(treeEntry);
+        Tree newTree = dataService.createTree(repository, entries, baseTree.getSha());
 
-            // create new tree entry
-            TreeEntry treeEntry = new TreeEntry();
-            treeEntry.setPath(path);
-            treeEntry.setMode(TreeEntry.MODE_BLOB);
-            treeEntry.setType(TreeEntry.TYPE_BLOB);
-            treeEntry.setSha(blob_sha);
-            treeEntry.setSize(blob.getContent().length());
-            Collection<TreeEntry> entries = new ArrayList<>();
-            entries.add(treeEntry);
-            Tree newTree = dataService.createTree(repository, entries, baseTree.getSha());
+        // create commit
+        Commit commit = new Commit();
+        commit.setMessage(message);
+        commit.setTree(newTree);
 
-            // create commit
-            Commit commit = new Commit();
-            commit.setMessage(message);
-            commit.setTree(newTree);
+        CommitUser author = new CommitUser();
+        author.setName(user);
+        author.setEmail(email);
+        Calendar now = Calendar.getInstance();
+        author.setDate(now.getTime());
+        commit.setAuthor(author);
+        commit.setCommitter(author);
 
-            CommitUser author = new CommitUser();
-            author.setName(user);
-            author.setEmail(email);
-            Calendar now = Calendar.getInstance();
-            author.setDate(now.getTime());
-            commit.setAuthor(author);
-            commit.setCommitter(author);
+        List<Commit> listOfCommits = new ArrayList<>();
+        listOfCommits.add(new Commit().setSha(baseCommitSha));
+        commit.setParents(listOfCommits);
+        Commit newCommit = dataService.createCommit(repository, commit);
 
-            List<Commit> listOfCommits = new ArrayList<>();
-            listOfCommits.add(new Commit().setSha(baseCommitSha));
-            commit.setParents(listOfCommits);
-            Commit newCommit = dataService.createCommit(repository, commit);
+        // create resource
+        TypedResource commitResource = new TypedResource();
+        commitResource.setSha(newCommit.getSha());
+        commitResource.setType(TypedResource.TYPE_COMMIT);
+        commitResource.setUrl(newCommit.getUrl());
 
-            // create resource
-            TypedResource commitResource = new TypedResource();
-            commitResource.setSha(newCommit.getSha());
-            commitResource.setType(TypedResource.TYPE_COMMIT);
-            commitResource.setUrl(newCommit.getUrl());
-
-            // get master reference and update it
-            Reference reference = dataService.getReference(repository, HEAD_MASTER);
-            reference.setObject(commitResource);
-            dataService.editReference(repository, reference, true);
-            res = true;
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-
-        return res;
+        // get master reference and update it
+        Reference reference = dataService.getReference(repository, HEAD_MASTER);
+        reference.setObject(commitResource);
+        dataService.editReference(repository, reference, true);
     }
 
     /**

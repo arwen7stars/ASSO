@@ -25,15 +25,15 @@ export class EditPatternComponent implements OnInit {
   }
 
   getPattern(): void {
-    const name = this.route.snapshot.paramMap.get('name');
-    this.patternService.getPattern(name)
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.patternService.getPattern(id)
       .subscribe(pattern => {
         this.pattern = pattern;
       });
   }
 
   submit(): void {
-    this.patternService.updatePattern(this.pattern.name, this.pattern.markdown, this.message)
+    this.patternService.updatePattern(this.pattern.name, this.pattern.id, this.pattern.markdown, this.message)
       .subscribe(pattern => {
         this.pattern = pattern;
         this.location.back();

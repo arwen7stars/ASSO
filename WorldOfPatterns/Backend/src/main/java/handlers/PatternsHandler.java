@@ -46,70 +46,69 @@ public class PatternsHandler {
 
     /**
      * Get a pattern
-     * @param name Name of the pattern
+     * @param id ID of the pattern
      * @return The pattern requested
      * @throws PatternNotFoundException When the pattern does not exist
      */
-    @RequestMapping(value = "/patterns/{name}", method = RequestMethod.GET)
-    public Pattern getPattern(@PathVariable("name") String name) throws PatternNotFoundException {
-        return service.getPattern(name);
+    @RequestMapping(value = "/patterns/{id}", method = RequestMethod.GET)
+    public Pattern getPattern(@PathVariable("id") int id) throws PatternNotFoundException {
+        return service.getPattern(id);
     }
 
     /**
      * Add a new pattern
-     * @param name Name of the new pattern
-     * @param content Content object containing the markdown of the new pattern
+     * @param content Content object containing the name and the markdown of the new pattern
      * @throws PatternCreationFailedException When the pattern already exists
      * @throws IOException When there is a problem reading the content
      */
-    @CrossOrigin@RequestMapping(value = "/patterns/{name}", method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Pattern createPattern(@PathVariable("name") String name, @RequestBody String content)
+    @CrossOrigin@RequestMapping(value = "/patterns", method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public Pattern createPattern(@RequestBody String content)
             throws PatternCreationFailedException, IOException {
 
         UpdatePatternContent patternContent = new ObjectMapper().readValue(content, UpdatePatternContent.class);
 
-        return service.createPattern(name, patternContent.getMarkdown());
+        return service.createPattern(patternContent.getName(), patternContent.getMarkdown());
     }
 
     /**
      * Update a requested pattern
-     * @param name Name of the pattern to update
+     * @param id ID of the pattern to update
      * @param content Content object containing the markdown of the updated pattern and a message
      * @throws PatternNotFoundException When the pattern is not found
      * @throws IOException When there is a problem reading the content
      */
-    @CrossOrigin@RequestMapping(value = "/patterns/{name}", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Pattern updatePattern(@PathVariable("name") String name, @RequestBody String content)
+    @CrossOrigin@RequestMapping(value = "/patterns/{id}", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public Pattern updatePattern(@PathVariable("id") int id, @RequestBody String content)
             throws PatternNotFoundException, IOException {
 
         UpdatePatternContent patternContent = new ObjectMapper().readValue(content, UpdatePatternContent.class);
 
         if(patternContent.getMessage() != null)
-            return service.updatePattern(name, patternContent.getMarkdown(), patternContent.getMessage());
+            return service.updatePattern(id, patternContent.getMarkdown(), patternContent.getMessage());
         throw new IllegalArgumentException();
     }
 
     /**
      * Get pattern history
-     * @param name Name of the pattern to check history for
+     * @param id ID of the pattern to check history for
      * @return The pattern history (commit messages and dates)
      * @throws PatternNotFoundException When the pattern does not exist
      */
-    @RequestMapping(value = "/patterns/{name}/history", method = RequestMethod.GET)
-    public List<CommitBasicInfo> getPatternHistory(@PathVariable("name") String name) throws PatternNotFoundException {
-        return service.getPatternHistory(name);
+    @RequestMapping(value = "/patterns/{id}/history", method = RequestMethod.GET)
+    public List<CommitBasicInfo> getPatternHistory(@PathVariable("id") int id) throws PatternNotFoundException {
+        return service.getPatternHistory(id);
     }
 
     /**
      * Get an old revision of the pattern
-     * @param name The name of the pattern
+     * @param id The ID of the pattern
      * @param sha The sha associated with the revision
      * @return The old revision of the pattern
      * @throws OldRevisionNotFound When the old revision does not exist or the pattern is not found
      */
-    @RequestMapping(value = "/patterns/{name}/history/{sha}", method = RequestMethod.GET)
-    public Pattern getPatternOldRevision(@PathVariable("name") String name, @PathVariable("sha") String sha) throws OldRevisionNotFound {
-        return service.getPatternOldRevision(name, sha);
+    @RequestMapping(value = "/patterns/{id}/history/{sha}", method = RequestMethod.GET)
+    public Pattern getPatternOldRevision(@PathVariable("id") int id, @PathVariable("sha") String sha) throws OldRevisionNotFound {
+        return service.getPatternOldRevision(id, sha);
     }
 
     @ExceptionHandler

@@ -2,7 +2,7 @@
   <ul class="list-group" *ngFor="let revision of revisions">
     <li class="list-group-item">
       <span class="revision-date float-right">{{revision.date}} GMT</span>
-      <a routerLink="/pattern/{{pattern_name}}/history/{{revision.sha}}">{{revision.message}}</a>
+      <a routerLink="/pattern/{{pattern_id}}/history/{{revision.sha}}">{{revision.message}}</a>
     </li>
   </ul>
 

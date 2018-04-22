@@ -23,14 +23,15 @@ export class PatternService {
     return this.http.get<Pattern[]>(this.patternUrl);
   }
 
-  /** GET pattern by name */
-  getPattern(name: string): Observable<Pattern> {
-    const url = `${this.patternUrl}/${name}`;
+  /** GET pattern by id */
+  getPattern(id: number): Observable<Pattern> {
+    const url = `${this.patternUrl}/${id}`;
     return this.http.get<Pattern>(url);
   }
 
-  updatePattern(name: string, markdown: string, message: string) : Observable<any> {
-    const url = `${this.patternUrl}/${name}`;
+  /** Update pattern by id**/
+  updatePattern(name: string, id: number, markdown: string, message: string) : Observable<any> {
+    const url = `${this.patternUrl}/${id}`;
 
     if(!message) {
       message = 'Updated ' + name;
@@ -44,20 +45,21 @@ export class PatternService {
     return this.http.post(url, data, httpOptions);
   }
 
-  getPatternHistory(name: string): Observable<PatternRevision[]> {
-    const url = `${this.patternUrl}/${name}/history`;
+  getPatternHistory(id: number): Observable<PatternRevision[]> {
+    const url = `${this.patternUrl}/${id}/history`;
     return this.http.get<PatternRevision[]>(url);
   }
 
-  getPatternRevision(name: string, sha: string): Observable<Pattern> {
-    const url = `${this.patternUrl}/${name}/history/${sha}`;
+  getPatternRevision(id: number, sha: string): Observable<Pattern> {
+    const url = `${this.patternUrl}/${id}/history/${sha}`;
     return this.http.get<Pattern>(url);
   }
 
   addPattern(name: string, markdown: string): Observable<Pattern> {
-    const url = `${this.patternUrl}/${name}`;
+    const url = `${this.patternUrl}`;
 
     let data = {
+      name: name,
       markdown: markdown,
     };
 
@@ -65,16 +67,16 @@ export class PatternService {
   }
 
   getLastModified(revisions: PatternRevision[]) : Date {
-    var revision = revisions[0];            // the first element has the latest date
+    let revision = revisions[0];            // the first element has the latest date
 
     return new Date(Date.parse(revision.date));
   }
 
   timeSince(date : Date): string {
-    var elapsedTime = Date.now() - date.getTime();
+    let elapsedTime = Date.now() - date.getTime();
 
-    var seconds = Math.floor(elapsedTime / 1000);
-    var interval = Math.floor(seconds / 31536000);
+    let seconds = Math.floor(elapsedTime / 1000);
+    let interval = Math.floor(seconds / 31536000);
 
     if (interval > 1) {
       return interval + " years";

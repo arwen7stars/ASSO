@@ -23,10 +23,10 @@ export class PatternRevisionComponent implements OnInit {
   }
 
   getPatternRevision(): void {
-    var name = this.route.snapshot.paramMap.get('name');
-    var sha = this.route.snapshot.paramMap.get('sha');
+    let id = +this.route.snapshot.paramMap.get('id');
+    let sha = this.route.snapshot.paramMap.get('sha');
 
-    this.patternService.getPatternRevision(name, sha)
+    this.patternService.getPatternRevision(id, sha)
       .subscribe(pattern => this.pattern = pattern);
   }
 
