@@ -54,6 +54,16 @@ export class PatternService {
     return this.http.get<Pattern>(url);
   }
 
+  addPattern(name: string, markdown: string): Observable<Pattern> {
+    const url = `${this.patternUrl}/${name}`;
+
+    let data = {
+      markdown: markdown,
+    };
+
+    return this.http.put<Pattern>(url, data, httpOptions);
+  }
+
   getLastModified(revisions: PatternRevision[]) : Date {
     var revision = revisions[0];            // the first element has the latest date
 

@@ -13,6 +13,7 @@
         name="name"
         #name="ngModel"
         required
+        disabled
       />
 
       <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
@@ -35,11 +36,10 @@
     <textarea [(ngModel)]="pattern.markdown"
               class="form-control"
               rows="6"
-              placeholder="Introduce information about the pattern"
               name="markdown"
               #markdown="ngModel"
+              placeholder="Introduce information about the pattern"
               required>
-      {{ pattern?.markdown }}
     </textarea>
 
     <div *ngIf="markdown.invalid && (markdown.dirty || markdown.touched)" class="alert alert-danger">

@@ -1,0 +1,14 @@
+label {
+  font-weight: bold;
+}
+
+.add-pattern {
+  width: 80%;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 1em;
+}
+
+.alert {
+  margin-top: 0.3em;
+}

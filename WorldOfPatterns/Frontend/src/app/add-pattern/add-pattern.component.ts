@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {PatternService} from "../pattern.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-add-pattern',
@@ -6,10 +8,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add-pattern.component.css']
 })
 export class AddPatternComponent implements OnInit {
+  constructor(
+    private patternService: PatternService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
-  constructor() { }
+  ngOnInit() {}
 
-  ngOnInit() {
+  add(name: string, markdown: string): void {
+
+    this.patternService.addPattern(name, markdown)
+      .subscribe(() => {
+        this.router.navigate(['/patterns']);
+      });
   }
 
 }
