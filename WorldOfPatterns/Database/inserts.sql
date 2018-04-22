@@ -1,4 +1,5 @@
-insert into pattern(name) values ('Abstract Factory');
-insert into pattern(name) values ('Builder');
-
-insert into patternParticipant(idPattern, name, description) values(1, 'AbstractFactory', 'Super class to hold the interface for all families/factories');
+INSERT INTO worldofpatterns.pattern (id, name) VALUES (9, 'Abstract Factory');
+INSERT INTO worldofpatterns.pattern (id, name) VALUES (10, 'Singleton');
+INSERT INTO worldofpatterns.pattern (id, name) VALUES (11, 'Factory Method');
+INSERT INTO worldofpatterns.pattern (id, name) VALUES (12, 'Builder');
+INSERT INTO worldofpatterns.pattern (id, name) VALUES (13, 'Prototype');
