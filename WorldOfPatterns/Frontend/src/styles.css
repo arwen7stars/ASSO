@@ -4,11 +4,40 @@ body {
   font-family: 'Tajawal', sans-serif;
 }
 
+.btn {
+  width: 6em;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+}
+
 .jumbotron {
   background-color: #C5DCE4;
+  padding: 2em;
 }
 
 .title_jumbotron {
   color: #3E7387;
   text-shadow: 2px 2px white;
+}
+
+.pattern-title {
+  color: #3E7387;
+}
+
+.lead {
+  text-shadow: 1px 1px white;
+  font-size: 16px;
+}
+
+#body a {
+  color: #608F9E;
+}
+
+#body a:hover {
+  color: #3D7486;
+  text-decoration: none;
+  font-weight: lighter;
+  text-shadow: 1px 1px #235B6D;
 }

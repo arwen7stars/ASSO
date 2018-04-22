@@ -1,0 +1,18 @@
+.pattern-title-wrapper {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pattern-detail {
+  border: 2px solid #EBF4F7;
+  width: 80%;
+  padding: 1em;
+  margin: 1em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.imp-info {
+  font-weight: bold;
+}

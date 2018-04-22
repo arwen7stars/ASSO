@@ -4,6 +4,12 @@
   margin-bottom: 1em;
 }
 
-.pattern h2 {
-  text-align: center;
+.pattern h2, .last-mod-label {
+  font-weight: bold;
+}
+
+.last-mod-wrapper {
+  font-size: 15px;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }

@@ -13,6 +13,8 @@ import { PatternsComponent } from './patterns/patterns.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { PatternDetailComponent } from './pattern-detail/pattern-detail.component';
 import { AddPatternComponent } from './add-pattern/add-pattern.component';
+import { PatternHistoryComponent } from './pattern-history/pattern-history.component';
+import { EditPatternComponent } from './edit-pattern/edit-pattern.component';
 
 
 @NgModule({
@@ -22,7 +24,9 @@ import { AddPatternComponent } from './add-pattern/add-pattern.component';
     NavbarComponent,
     PatternsComponent,
     PatternDetailComponent,
-    AddPatternComponent
+    AddPatternComponent,
+    PatternHistoryComponent,
+    EditPatternComponent
   ],
   imports: [
     AlertModule.forRoot(),

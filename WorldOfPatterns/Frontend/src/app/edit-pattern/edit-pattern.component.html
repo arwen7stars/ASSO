@@ -1,0 +1,53 @@
+<div class="edit-pattern">
+  <h1 class="pattern-title">Edit pattern {{pattern?.name}}</h1>
+  <hr>
+  <div class="form-group row">
+    <label for="pattern-name" class="col-2 col-form-label">Pattern name</label>
+    <div class="col-10">
+      <input
+        [(ngModel)]="pattern.name"
+        class="form-control"
+        id="pattern-name"
+        type="text"
+        placeholder="Pattern name"
+        name="name"
+        #name="ngModel"
+        required
+      />
+
+      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+        <div *ngIf="name?.errors?.required">
+          Name is required.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="message" class="col-2 col-form-label">Update message</label>
+    <div class="col-10">
+      <input [(ngModel)]="message" class="form-control" id="message" type="text" placeholder="Introduce here the update message"/>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <textarea [(ngModel)]="pattern.markdown"
+              class="form-control"
+              rows="6"
+              placeholder="Introduce information about the pattern"
+              name="markdown"
+              #markdown="ngModel"
+              required>
+      {{ pattern?.markdown }}
+    </textarea>
+
+    <div *ngIf="markdown.invalid && (markdown.dirty || markdown.touched)" class="alert alert-danger">
+      <div *ngIf="markdown?.errors?.required">
+        Information about the pattern is required.
+      </div>
+    </div>
+  </div>
+
+  <button (click)="submit()" class="btn btn-outline-dark">Update</button>
+</div>

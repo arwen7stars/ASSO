@@ -62,7 +62,7 @@ public class PatternsHandler {
      * @throws PatternCreationFailedException When the pattern already exists
      * @throws IOException When there is a problem reading the content
      */
-    @RequestMapping(value = "/patterns/{name}", method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @CrossOrigin@RequestMapping(value = "/patterns/{name}", method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Pattern createPattern(@PathVariable("name") String name, @RequestBody String content)
             throws PatternCreationFailedException, IOException {
 
@@ -78,14 +78,14 @@ public class PatternsHandler {
      * @throws PatternNotFoundException When the pattern is not found
      * @throws IOException When there is a problem reading the content
      */
-    @RequestMapping(value = "/patterns/{name}", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @CrossOrigin@RequestMapping(value = "/patterns/{name}", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Pattern updatePattern(@PathVariable("name") String name, @RequestBody String content)
             throws PatternNotFoundException, IOException {
 
         UpdatePatternContent patternContent = new ObjectMapper().readValue(content, UpdatePatternContent.class);
 
         if(patternContent.getMessage() != null)
-            service.updatePattern(name, patternContent.getMarkdown(), patternContent.getMessage());
+            return service.updatePattern(name, patternContent.getMarkdown(), patternContent.getMessage());
         throw new IllegalArgumentException();
     }
 

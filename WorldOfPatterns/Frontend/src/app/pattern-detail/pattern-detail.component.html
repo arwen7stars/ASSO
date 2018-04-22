@@ -1,9 +1,14 @@
-<div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-3 title_jumbotron">{{ pattern.name }}</h1>
-  </div>
-</div>
-
 <div class="pattern-detail">
-  <button class="btn btn-secondary" (click)="goBack()">go back</button>
+  <span class="float-right">
+    <button class="btn btn-outline-dark edit" routerLink="/pattern/{{pattern.name}}/edit">Edit</button>
+    <button class="btn btn-outline-dark go-back" (click)="goBack()">Go back</button>
+  </span>
+  <h1 class="display-4 pattern-title">{{ pattern.name }}</h1>
+  <span class="float-right"><span class="imp-info">Message:</span> "{{pattern.lastMessage}}"</span>
+  <span>
+    Last revision was <span class="imp-info">{{ pattern.lastModified }} ago</span> ●
+    <a routerLink="/pattern/{{pattern.name}}/history"> {{ revisions.length }} revisions</a>
+  </span>
+  <hr>
+  <div [innerHTML]="pattern.html"></div>
 </div>

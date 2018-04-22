@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { AppComponent } from "../app.component";
 import { Pattern } from '../pattern';
 import { PatternService } from "../pattern.service";
-import {AppComponent} from "../app.component";
 
 @Component({
   selector: 'app-patterns',
@@ -24,7 +24,23 @@ export class PatternsComponent implements OnInit {
   }
 
   getPatterns(): void {
-    this.patternService.getPatterns().subscribe(patterns => this.patterns = patterns);
+    this.patternService.getPatterns()
+      .subscribe(patterns => {
+        this.patterns = patterns;
+        this.getLastModified();
+      });
   }
 
+  getLastModified() : void {
+    for(var i = 0; i < this.patterns.length; i++) {
+      var revisions = new Array();
+
+      this.patternService.getPatternHistory(this.patterns[i].name)
+        .subscribe(function (i, result) {
+          revisions = result;
+          this.patterns[i].lastModified = this.patternService.getLastModified(revisions).toUTCString();
+          this.patterns[i].lastMessage = revisions[0].message;
+        }.bind(this, i));
+    }
+  }
 }

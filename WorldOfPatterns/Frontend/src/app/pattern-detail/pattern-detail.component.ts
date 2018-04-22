@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Pattern } from '../pattern';
+import { PatternRevision } from "../pattern-revision";
 import { PatternService } from "../pattern.service";
 
 @Component({
@@ -11,7 +12,8 @@ import { PatternService } from "../pattern.service";
   styleUrls: ['./pattern-detail.component.css']
 })
 export class PatternDetailComponent implements OnInit {
-  @Input() pattern: Pattern;
+  pattern: Pattern;
+  revisions: PatternRevision[];
 
   constructor(
     private patternService: PatternService,
@@ -20,16 +22,33 @@ export class PatternDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getHero()
+    this.getPattern()
   }
 
   goBack(): void {
     this.location.back();
   }
 
-  getHero(): void {
-    const id = +this.route.snapshot.paramMap.get('id');
-    this.patternService.getPattern(id).subscribe(pattern => this.pattern = pattern);
+  getPattern(): void {
+    const name = this.route.snapshot.paramMap.get('name');
+    this.patternService.getPattern(name).subscribe(pattern => {
+      this.pattern = pattern;
+      this.getRevisionHistory();
+    });
   }
+
+  getRevisionHistory(): void {
+    this.patternService.getPatternHistory(this.pattern.name)
+      .subscribe(revisions => {
+        this.revisions = revisions;
+        var date = this.patternService.getLastModified(revisions);
+
+        this.pattern.lastModified = this.patternService.timeSince(date);
+        this.pattern.lastMessage = this.revisions[0].message;
+      });
+  }
+
+
+
 
 }

@@ -1,6 +1,7 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h1 class="display-3 title_jumbotron">{{ title }}</h1>
+    <h2 class="display-3 title_jumbotron">{{ title }}</h2>
+    <p class="lead">Hello! Here you can edit already existing patterns and add new ones. We hope you enjoy your journey in the {{ title }}!</p>
   </div>
 </div>
 
@@ -8,13 +9,11 @@
   <div class="row">
     <div class="col-md-4 col-sm-6 col-12" *ngFor="let pattern of patterns">
       <div class="pattern">
-        <h2>{{pattern.name}}</h2>
-        <dl class="row">
-          <dt class="col-sm-3">Intent</dt>
-          <dd class="col-sm-9">Brief description of pattern.</dd>
-        </dl>
-        <p><a class="btn btn-secondary" routerLink="/pattern/{{pattern.id}}" role="button">View details &raquo;</a></p>
+        <h2><a routerLink="/pattern/{{pattern.name}}">{{pattern.name}}</a></h2>
 
+        <div class="last-mod-wrapper">
+          <span class="last-mod-label">Last revision: </span> {{ pattern.lastModified }}
+        </div>
       </div>
     </div>
   </div>
