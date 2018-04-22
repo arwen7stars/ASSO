@@ -1,3 +1,10 @@
-<p>
-  pattern-history works!
-</p>
+<div class="revisions">
+  <ul class="list-group" *ngFor="let revision of revisions">
+    <li class="list-group-item">
+      <span class="revision-date float-right">{{revision.date}} GMT</span>
+      <a routerLink="/pattern/{{pattern_name}}/history/{{revision.sha}}">{{revision.message}}</a>
+    </li>
+  </ul>
+
+  <button class="btn btn-outline-dark go-back" (click)="goBack()">Go back</button>
+</div>

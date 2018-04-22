@@ -1,0 +1,14 @@
+.revisions {
+  padding: 1em;
+  width: 80%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.revision-date {
+  font-weight: bold;
+}
+
+.go-back {
+  margin-top: 1em;
+}

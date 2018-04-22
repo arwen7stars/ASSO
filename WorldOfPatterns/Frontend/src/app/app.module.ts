@@ -15,6 +15,7 @@ import { PatternDetailComponent } from './pattern-detail/pattern-detail.componen
 import { AddPatternComponent } from './add-pattern/add-pattern.component';
 import { PatternHistoryComponent } from './pattern-history/pattern-history.component';
 import { EditPatternComponent } from './edit-pattern/edit-pattern.component';
+import { PatternRevisionComponent } from './pattern-revision/pattern-revision.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { EditPatternComponent } from './edit-pattern/edit-pattern.component';
     PatternDetailComponent,
     AddPatternComponent,
     PatternHistoryComponent,
-    EditPatternComponent
+    EditPatternComponent,
+    PatternRevisionComponent
   ],
   imports: [
     AlertModule.forRoot(),
