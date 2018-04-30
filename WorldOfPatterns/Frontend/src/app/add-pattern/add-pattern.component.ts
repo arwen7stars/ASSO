@@ -8,6 +8,8 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./add-pattern.component.css']
 })
 export class AddPatternComponent implements OnInit {
+  public loading = false;
+
   constructor(
     private patternService: PatternService,
     private route: ActivatedRoute,
@@ -19,10 +21,11 @@ export class AddPatternComponent implements OnInit {
   }
 
   add(name: string, markdown: string): void {
-
+    this.loading = true;
     this.patternService.addPattern(name, markdown)
       .subscribe(() => {
         this.router.navigate(['/patterns']);
+        this.loading = false;
       });
   }
 

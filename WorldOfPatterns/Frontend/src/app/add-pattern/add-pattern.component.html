@@ -16,6 +16,7 @@
   </div>
 
   <div class="form-group">
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
     <textarea #patternMarkdown class="form-control" rows="10" placeholder="Introduce information about the pattern" required></textarea>
   </div>
 
