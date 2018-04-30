@@ -1,5 +1,6 @@
 <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 <div *ngIf="loading == false" class="revisions">
+  <button class="btn btn-outline-dark go-back float-right" (click)="goBack()">Go back</button>
   <h1 class="pattern-title">Pattern revisions</h1>
   <ul class="list-group" *ngFor="let revision of revisions">
     <li class="list-group-item">
@@ -7,6 +8,4 @@
       <a routerLink="/pattern/{{pattern_id}}/history/{{revision.sha}}">{{revision.message}}</a>
     </li>
   </ul>
-
-  <button class="btn btn-outline-dark go-back" (click)="goBack()">Go back</button>
 </div>
