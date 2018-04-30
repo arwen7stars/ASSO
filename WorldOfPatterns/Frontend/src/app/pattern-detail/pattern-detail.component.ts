@@ -14,6 +14,7 @@ import { PatternService } from "../pattern.service";
 export class PatternDetailComponent implements OnInit {
   pattern: Pattern;
   revisions: PatternRevision[];
+  public loading = true;
 
   constructor(
     private patternService: PatternService,
@@ -30,6 +31,7 @@ export class PatternDetailComponent implements OnInit {
   }
 
   getPattern(): void {
+    this.loading = true;
     const id = +this.route.snapshot.paramMap.get('id');
     this.patternService.getPattern(id).subscribe(pattern => {
       this.pattern = pattern;
@@ -45,6 +47,7 @@ export class PatternDetailComponent implements OnInit {
 
         this.pattern.lastModified = this.patternService.timeSince(date);
         this.pattern.lastMessage = this.revisions[0].message;
+        this.loading = false;
       });
   }
 

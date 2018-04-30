@@ -1,4 +1,5 @@
-<div class="edit-pattern">
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div *ngIf="loading == false" class="edit-pattern">
   <h1 class="pattern-title">Edit pattern {{pattern?.name}}</h1>
   <hr>
   <div class="form-group row">
@@ -28,19 +29,19 @@
   <div class="form-group row">
     <label for="message" class="col-2 col-form-label">Update message</label>
     <div class="col-10">
-      <input [(ngModel)]="message" class="form-control" id="message" type="text" placeholder="Introduce here the update message"/>
+      <input [(ngModel)]="message" class="form-control" id="message" type="text" placeholder="Updated {{pattern.name}}"/>
     </div>
   </div>
 
   <div class="form-group">
+    <ngx-loading [show]="updating" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
     <textarea [(ngModel)]="pattern.markdown"
               class="form-control"
-              rows="6"
+              rows="10"
               name="markdown"
               #markdown="ngModel"
               placeholder="Introduce information about the pattern"
-              required>
-    </textarea>
+              required></textarea>
 
     <div *ngIf="markdown.invalid && (markdown.dirty || markdown.touched)" class="alert alert-danger">
       <div *ngIf="markdown?.errors?.required">

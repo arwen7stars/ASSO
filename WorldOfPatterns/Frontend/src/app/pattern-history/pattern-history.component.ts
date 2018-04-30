@@ -12,6 +12,7 @@ import {PatternRevision} from "../pattern-revision";
 export class PatternHistoryComponent implements OnInit {
   pattern_id : number;
   revisions : PatternRevision[];
+  public loading = true;
 
   constructor(
     private patternService: PatternService,
@@ -28,10 +29,12 @@ export class PatternHistoryComponent implements OnInit {
   }
 
   getPatternHistory() : void {
+    this.loading = true;
     this.pattern_id = +this.route.snapshot.paramMap.get('id');
     this.patternService.getPatternHistory(this.pattern_id)
       .subscribe(revisions => {
         this.revisions = revisions;
+        this.loading = false;
       });
   }
 

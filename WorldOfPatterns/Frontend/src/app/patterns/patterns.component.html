@@ -1,20 +1,23 @@
-<div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h2 class="display-3 title_jumbotron">{{ title }}</h2>
-    <p class="lead">Hello! Here you can edit already existing patterns and add new ones. We hope you enjoy your journey in the {{ title }}!</p>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<span *ngIf="loading == false" class="wrapper">
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h2 class="display-3 title_jumbotron">{{ title }}</h2>
+      <p class="lead">Hello! Here you can edit already existing patterns and add new ones. We hope you enjoy your journey in the {{ title }}!</p>
+    </div>
   </div>
-</div>
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-4 col-sm-6 col-12" *ngFor="let pattern of patterns">
-      <div class="pattern">
-        <h2><a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a></h2>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 col-sm-6 col-12" *ngFor="let pattern of patterns">
+        <div class="pattern">
+          <h2><a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a></h2>
 
-        <div class="last-mod-wrapper">
-          <span class="last-mod-label">Last revision: </span> {{ pattern.lastModified }}
+          <div class="last-mod-wrapper">
+            <span class="last-mod-label">Last revision: </span> {{ pattern.lastModified }}
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</span>

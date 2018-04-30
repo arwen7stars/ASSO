@@ -3,6 +3,7 @@ import { AlertModule } from 'ngx-bootstrap';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; // <-- NgModel lives here
+import { LoadingModule } from 'ngx-loading';
 
 import { PatternService }          from './pattern.service';
 
@@ -32,6 +33,7 @@ import { PatternRevisionComponent } from './pattern-revision/pattern-revision.co
   ],
   imports: [
     AlertModule.forRoot(),
+    LoadingModule,
     BrowserModule,
     HttpClientModule,
     FormsModule,

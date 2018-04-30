@@ -12,6 +12,8 @@ import {Pattern} from "../pattern";
 export class EditPatternComponent implements OnInit {
   @Input() pattern: Pattern;
   @Input() message: string;
+  public loading = true;
+  public updating = false;
 
   constructor(
     private patternService: PatternService,
@@ -25,18 +27,22 @@ export class EditPatternComponent implements OnInit {
   }
 
   getPattern(): void {
+    this.loading = true;
     const id = +this.route.snapshot.paramMap.get('id');
     this.patternService.getPattern(id)
       .subscribe(pattern => {
         this.pattern = pattern;
+        this.loading = false;
       });
   }
 
   submit(): void {
+    this.updating = true;
     this.patternService.updatePattern(this.pattern.name, this.pattern.id, this.pattern.markdown, this.message)
       .subscribe(pattern => {
         this.pattern = pattern;
         this.location.back();
+        this.updating = false;
       });
   }
 }

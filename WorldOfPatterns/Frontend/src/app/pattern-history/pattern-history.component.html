@@ -1,4 +1,6 @@
-<div class="revisions">
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div *ngIf="loading == false" class="revisions">
+  <h1 class="pattern-title">Pattern revisions</h1>
   <ul class="list-group" *ngFor="let revision of revisions">
     <li class="list-group-item">
       <span class="revision-date float-right">{{revision.date}} GMT</span>

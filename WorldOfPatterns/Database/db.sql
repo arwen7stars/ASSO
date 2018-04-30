@@ -1,3 +1,5 @@
+USE worldofpatterns;
+
 create table pattern
 (
 	id serial primary key,

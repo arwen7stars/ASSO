@@ -11,6 +11,7 @@ import {Pattern} from "../pattern";
 })
 export class PatternRevisionComponent implements OnInit {
   pattern: Pattern;
+  public loading = true;
 
   constructor(
     private patternService: PatternService,
@@ -23,11 +24,15 @@ export class PatternRevisionComponent implements OnInit {
   }
 
   getPatternRevision(): void {
+    this.loading = true;
     let id = +this.route.snapshot.paramMap.get('id');
     let sha = this.route.snapshot.paramMap.get('sha');
 
     this.patternService.getPatternRevision(id, sha)
-      .subscribe(pattern => this.pattern = pattern);
+      .subscribe(pattern => {
+        this.pattern = pattern;
+        this.loading = false;
+      });
   }
 
   goBack(): void {

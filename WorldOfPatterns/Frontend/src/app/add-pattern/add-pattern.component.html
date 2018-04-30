@@ -4,13 +4,19 @@
   <div class="form-group row">
     <label for="pattern-name" class="col-2 col-form-label">Pattern name</label>
     <div class="col-10">
-      <input #patternName class="form-control" id="pattern-name" type="text" placeholder="Pattern name" required/>
+      <input
+        #patternName
+        class="form-control"
+        id="pattern-name"
+        type="text"
+        placeholder="Pattern name"
+        required
+      />
     </div>
   </div>
 
   <div class="form-group">
-    <textarea #patternMarkdown class="form-control" rows="6" placeholder="Introduce information about the pattern" required>
-    </textarea>
+    <textarea #patternMarkdown class="form-control" rows="10" placeholder="Introduce information about the pattern" required></textarea>
   </div>
 
   <button (click)="add(patternName.value, patternMarkdown.value)" class="btn btn-outline-dark">

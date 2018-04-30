@@ -14,7 +14,9 @@ export class AddPatternComponent implements OnInit {
     private router: Router
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
 
   add(name: string, markdown: string): void {
 

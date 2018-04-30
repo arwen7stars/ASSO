@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators';
 
 import { Pattern } from './pattern';
 import { PatternRevision } from "./pattern-revision";
@@ -21,6 +19,10 @@ export class PatternService {
   /** GET patterns from the server */
   getPatterns (): Observable<Pattern[]> {
     return this.http.get<Pattern[]>(this.patternUrl);
+  }
+
+  onEnd() : void {
+    console.log("Hide loader!");
   }
 
   /** GET pattern by id */
@@ -98,16 +100,5 @@ export class PatternService {
       return interval + " minutes";
     }
     return Math.floor(seconds) + " seconds";
-  }
-
-  private handleError<T> (operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
   }
 }

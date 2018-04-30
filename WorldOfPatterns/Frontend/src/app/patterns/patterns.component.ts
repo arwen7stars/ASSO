@@ -12,6 +12,7 @@ import { PatternService } from "../pattern.service";
 export class PatternsComponent implements OnInit {
   title : string;
   patterns : Pattern[];
+  public loading = true;
 
   constructor(
     private patternService: PatternService,
@@ -24,6 +25,7 @@ export class PatternsComponent implements OnInit {
   }
 
   getPatterns(): void {
+    this.loading = true;
     this.patternService.getPatterns()
       .subscribe(patterns => {
         this.patterns = patterns;
@@ -40,6 +42,7 @@ export class PatternsComponent implements OnInit {
           revisions = result;
           this.patterns[i].lastModified = this.patternService.getLastModified(revisions).toUTCString();
           this.patterns[i].lastMessage = revisions[0].message;
+          this.loading = false;
         }.bind(this, i));
     }
   }

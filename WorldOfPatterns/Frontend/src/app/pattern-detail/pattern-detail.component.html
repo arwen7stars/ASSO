@@ -1,4 +1,5 @@
-<div class="pattern-detail">
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div *ngIf="loading == false" class="pattern-detail">
   <span class="float-right">
     <button class="btn btn-outline-dark edit" routerLink="/pattern/{{pattern.id}}/edit">Edit</button>
     <button class="btn btn-outline-dark go-back" (click)="goBack()">Go back</button>
