@@ -8,10 +8,9 @@ import org.eclipse.egit.github.core.service.*;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
+import static utils.Utils.*;
 
 /**
  * Class to connect with GitHub
@@ -72,14 +71,27 @@ public class MyGitHubService {
      * @return List of file names inside the directory at path
      * @throws IOException When the path is invalid
      */
-    public ArrayList<String> getRepositoryContents(String path) throws IOException {
-        ArrayList<String> res = new ArrayList<>();
+    public Map<Integer, String> getRepositoryContents(String path) throws IOException {
+        Map<Integer, String> res = new HashMap<>();
 
         List<RepositoryContents> contents = contentsService.getContents(repository, path);
 
         for(RepositoryContents c: contents) {
-            String name = c.getName();
-            res.add(name);
+            String id = c.getName();
+
+            if(id.contains(POINT))
+                continue;
+
+            try {
+                List<RepositoryContents> subcontents = contentsService.getContents(repository, path + id + SEPARATOR);
+
+                for(RepositoryContents subc: subcontents) {
+                    String name = subc.getName();
+                    res.put(Integer.parseInt(id), name.replace(FILE_FORMAT, EMPTY_STRING));
+                }
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
 
         return res;

@@ -44,7 +44,7 @@ export class PatternService {
       message: message
     };
 
-    return this.http.post(url, data, httpOptions);
+    return this.http.put(url, data, httpOptions);
   }
 
   getPatternHistory(id: number): Observable<PatternRevision[]> {
@@ -65,7 +65,7 @@ export class PatternService {
       markdown: markdown,
     };
 
-    return this.http.put<Pattern>(url, data, httpOptions);
+    return this.http.post<Pattern>(url, data, httpOptions);
   }
 
   getLastModified(revisions: PatternRevision[]) : Date {

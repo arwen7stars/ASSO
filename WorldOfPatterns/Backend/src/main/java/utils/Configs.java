@@ -27,7 +27,9 @@ public class Configs
     public static String GIT_REPOSITORY;
     public static String REPOSITORY_PATH;
 
-    public static String ALLOWED_ORIGINS = "http://projectidealize.me,https://projectidealize.me";
+    public static String ALLOWED_ORIGINS;
+
+    public static boolean PULL_FROM_GIT = false;
 
     public static ServicesFactory servicesFactory;
 
@@ -84,5 +86,7 @@ public class Configs
         REPOSITORY_PATH = prop.getProperty("repositorypath");
 
         ALLOWED_ORIGINS = prop.getProperty("allowed_origins");
+
+        PULL_FROM_GIT = Boolean.parseBoolean(prop.getProperty("pull_from_git"));
     }
 }

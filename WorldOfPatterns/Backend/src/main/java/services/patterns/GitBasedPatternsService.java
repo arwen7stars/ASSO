@@ -1,18 +1,20 @@
 package services.patterns;
 
 import patterns.Pattern;
-import services.database.MySqlBasedDatabaseService;
+import patterns.PatternLanguage;
 import services.git.CommitBasicInfo;
 import services.git.MyGitHubService;
-import utils.exceptions.OldRevisionNotFound;
-import utils.exceptions.PatternCreationFailedException;
-import utils.exceptions.PatternNotFoundException;
+import utils.exceptions.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
 import static utils.Configs.*;
+import static utils.Utils.FILE_FORMAT;
+import static utils.Utils.SEPARATOR;
+import static utils.Utils.SPACE;
+import static utils.Utils.SPACE_ENCODED;
 
 /**
  * Class that performs Patterns services using GitHub
@@ -20,7 +22,9 @@ import static utils.Configs.*;
 public class GitBasedPatternsService implements PatternsService{
     private static final String PATTERNS_PATH = "patterns/";
     private static final String PATTERN_CREATION_MESSAGE = "Pattern created";
-    private static final String FILE_FORMAT = ".md";
+
+    private static final String START_LOADING = "Started loading";
+    private static final String FINISH_LOADING = "Finished loading";
 
     private MyGitHubService gitHubService;
     private MySqlBasedPatternsService mySqlService;
@@ -31,6 +35,9 @@ public class GitBasedPatternsService implements PatternsService{
     public GitBasedPatternsService() {
         gitHubService = new MyGitHubService(GIT_USER, GIT_PASSWORD, GIT_EMAIL, GIT_REPOSITORY);
         mySqlService = new MySqlBasedPatternsService();
+        if(PULL_FROM_GIT) {
+            gatherPatterns();
+        }
     }
 
     /**
@@ -59,7 +66,8 @@ public class GitBasedPatternsService implements PatternsService{
     public Pattern getPattern(int id) throws PatternNotFoundException {
         try {
             Pattern pattern = mySqlService.getPattern(id);
-            String content = gitHubService.getFileContent(PATTERNS_PATH + id + FILE_FORMAT);
+            String url = encodeUrl(PATTERNS_PATH + id + SEPARATOR + pattern.getName() + FILE_FORMAT);
+            String content = gitHubService.getFileContent(url);
 
             return generatePattern(id, pattern.getName(), content);
         }
@@ -77,14 +85,13 @@ public class GitBasedPatternsService implements PatternsService{
      */
     public Pattern createPattern(String name, String markdown) throws PatternCreationFailedException {
         try {
-            System.out.println(name);
-            System.out.println(markdown);
             int id = mySqlService.createPattern(name);
-            gitHubService.commit(PATTERNS_PATH + id + FILE_FORMAT, markdown, PATTERN_CREATION_MESSAGE);
+            String url = encodeUrl(PATTERNS_PATH + id + SEPARATOR + name + FILE_FORMAT);
+            gitHubService.commit(url, markdown, PATTERN_CREATION_MESSAGE);
             return getPattern(id);
         }
         catch(Exception ex) {
-            mySqlService.rollbackChanges();
+            mySqlService.rollbackPatternChanges();
             throw new PatternCreationFailedException();
         }
     }
@@ -99,8 +106,9 @@ public class GitBasedPatternsService implements PatternsService{
      */
     public Pattern updatePattern(int id, String markdown, String message) throws PatternNotFoundException {
         try {
-            getPattern(id);
-            gitHubService.commit(PATTERNS_PATH + id + FILE_FORMAT, markdown, message);
+            Pattern pattern = getPattern(id);
+            String url = encodeUrl(PATTERNS_PATH + id + SEPARATOR + pattern.getName() + FILE_FORMAT);
+            gitHubService.commit(url, markdown, message);
             return getPattern(id);
         } catch (IOException ex) {
             throw new PatternNotFoundException();
@@ -115,7 +123,9 @@ public class GitBasedPatternsService implements PatternsService{
      */
     public List<CommitBasicInfo> getPatternHistory(int id) throws PatternNotFoundException {
         try {
-            List<CommitBasicInfo> res = gitHubService.getRepositoryCommits(PATTERNS_PATH + id + FILE_FORMAT);
+            Pattern pattern = mySqlService.getPattern(id);
+
+            List<CommitBasicInfo> res = gitHubService.getRepositoryCommits(PATTERNS_PATH + id + SEPARATOR + pattern.getName() + FILE_FORMAT);
 
             if(res.size() == 0) {
                 throw new PatternNotFoundException();
@@ -123,7 +133,7 @@ public class GitBasedPatternsService implements PatternsService{
 
             return res;
         }
-        catch(IOException ex) {
+        catch(Exception ex) {
             throw new PatternNotFoundException();
         }
     }
@@ -139,8 +149,8 @@ public class GitBasedPatternsService implements PatternsService{
     public Pattern getPatternOldRevision(int id, String sha) throws OldRevisionNotFound, PatternNotFoundException {
         try {
             Pattern pattern = getPattern(id);
-
-            String content = gitHubService.getOldFileRevisionContent(PATTERNS_PATH + id + FILE_FORMAT, sha);
+            String url = encodeUrl(PATTERNS_PATH + id + SEPARATOR + pattern.getName() + FILE_FORMAT);
+            String content = gitHubService.getOldFileRevisionContent(url, sha);
 
             return generatePattern(id, pattern.getName(), content);
         }
@@ -168,6 +178,103 @@ public class GitBasedPatternsService implements PatternsService{
         }
         else {
             throw new IOException();
+        }
+    }
+
+    /**
+     * Pull patterns from repository
+     */
+    public void gatherPatterns() {
+        System.out.println(START_LOADING);
+
+        try {
+            Map<Integer, String> res = gitHubService.getRepositoryContents(PATTERNS_PATH);
+            for(Map.Entry<Integer, String> entry : res.entrySet()) {
+                try {
+                    mySqlService.createPattern(entry.getKey(), entry.getValue());
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            System.exit(1);
+        }
+
+        System.out.println(FINISH_LOADING);
+    }
+
+    /**
+     * Encode a url string from a base string
+     * @param string The initial string to encode
+     * @return The encoded result
+     */
+    public String encodeUrl(String string) {
+        return string.replace(SPACE, SPACE_ENCODED);
+    }
+
+    /**
+     * Create a pattern language
+     * @param name The name of the pattern language
+     * @param ids The pattern ids
+     * @return The pattern language created
+     * @throws PatternLanguageCreationFailedException When the pattern language creation failed
+     */
+    public PatternLanguage createPatternLanguage(String name, ArrayList<Integer> ids) throws PatternLanguageCreationFailedException {
+        try {
+            int id = mySqlService.createPatternLanguage(name);
+            mySqlService.addPatternLanguagePatterns(id, ids);
+            return mySqlService.getPatternLanguage(id);
+        }
+        catch(Exception ex) {
+            mySqlService.rollbackPatternLanguageChanges();
+            throw new PatternLanguageCreationFailedException();
+        }
+    }
+
+    /**
+     * Get a pattern language
+     * @param id The id of the pattern language
+     * @return The pattern language
+     * @throws PatternLanguageNotFoundException When the pattern language is not found
+     */
+    public PatternLanguage getPatternLanguage(int id) throws PatternLanguageNotFoundException {
+        try {
+            return mySqlService.getPatternLanguage(id);
+        }
+        catch (Exception ex) {
+            throw new PatternLanguageNotFoundException();
+        }
+    }
+
+    /**
+     * Get all the pattern languages
+     * @return All the pattern languages
+     * @throws PatternLanguageNotFoundException When an error occurs
+     */
+    public ArrayList<PatternLanguage> getPatternLanguages() throws PatternLanguageNotFoundException {
+        try {
+            return mySqlService.getPatternLanguages();
+        }
+        catch (Exception ex) {
+            throw new PatternLanguageNotFoundException();
+        }
+    }
+
+    /**
+     * Update a pattern language
+     * @param id The id of the pattern language
+     * @param ids The ids of the patterns to use
+     * @return The new pattern language
+     * @throws PatternLanguageNotFoundException When the pattern language is not found
+     */
+    public PatternLanguage updatePatternLanguage(int id, ArrayList<Integer> ids) throws PatternLanguageNotFoundException {
+        try {
+            mySqlService.addPatternLanguagePatterns(id, ids);
+            return mySqlService.getPatternLanguage(id);
+        }
+        catch(Exception ex) {
+            throw new PatternLanguageNotFoundException();
         }
     }
 }
