@@ -1,0 +1,22 @@
+.language-detail {
+  width: 80%;
+  padding: 1em;
+  margin: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid #EBF4F7;
+}
+
+.subtitle {
+  font-weight: bold;
+}
+
+ul {
+  list-style: none;
+  margin-top: 1em;
+}
+
+ul li:before {
+  content: "\00BB \0020";
+  margin-right: 1em;
+}

@@ -17,6 +17,11 @@ import { AddPatternComponent } from './add-pattern/add-pattern.component';
 import { PatternHistoryComponent } from './pattern-history/pattern-history.component';
 import { EditPatternComponent } from './edit-pattern/edit-pattern.component';
 import { PatternRevisionComponent } from './pattern-revision/pattern-revision.component';
+import { LanguagesComponent } from './languages/languages.component';
+import { LanguageDetailComponent } from './language-detail/language-detail.component';
+import {LanguageService} from "./language.service";
+import { AddLanguageComponent } from './add-language/add-language.component';
+import { EditLanguageComponent } from './edit-language/edit-language.component';
 
 
 @NgModule({
@@ -29,7 +34,11 @@ import { PatternRevisionComponent } from './pattern-revision/pattern-revision.co
     AddPatternComponent,
     PatternHistoryComponent,
     EditPatternComponent,
-    PatternRevisionComponent
+    PatternRevisionComponent,
+    LanguagesComponent,
+    LanguageDetailComponent,
+    AddLanguageComponent,
+    EditLanguageComponent
   ],
   imports: [
     AlertModule.forRoot(),
@@ -39,7 +48,7 @@ import { PatternRevisionComponent } from './pattern-revision/pattern-revision.co
     FormsModule,
     AppRoutingModule
   ],
-  providers: [PatternService],
+  providers: [PatternService, LanguageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

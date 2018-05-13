@@ -1,0 +1,21 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div *ngIf="loading == false" class="languages">
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <button class="btn btn-outline-dark float-right big-btn" routerLink="/addLanguage">Add Language</button>
+      <h2 class="display-3 title_jumbotron">Pattern Languages</h2>
+
+      <p class="lead">Hello! Here you can edit already existing languages and add new ones.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col-md-3 col-sm-6 col-12" *ngFor="let language of languages">
+        <div class="language">
+          <h2><a routerLink="/language/{{language.id}}">{{language.name}}</a></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

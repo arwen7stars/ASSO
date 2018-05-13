@@ -1,0 +1,15 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<div *ngIf="loading == false" class="language-detail">
+  <span class="float-right">
+    <button class="btn btn-outline-dark mid-btn edit" routerLink="/language/{{language.id}}/edit">Edit</button>
+    <button class="btn btn-outline-dark mid-btn go-back" (click)="goBack()">Go back</button>
+  </span>
+  <h1 class="display-4 pattern-title">{{ language.name }}</h1>
+  <hr>
+  <h3 class="subtitle">Language patterns:</h3>
+  <ul *ngFor="let pattern of language.patterns">
+    <li>
+      <a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a>
+    </li>
+  </ul>
+</div>

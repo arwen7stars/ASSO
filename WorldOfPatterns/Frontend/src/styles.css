@@ -4,8 +4,16 @@ body {
   font-family: 'Tajawal', sans-serif;
 }
 
-.btn {
+.mid-btn {
   width: 6em;
+}
+
+.big-btn {
+  width: 10em;
+  text-shadow: 0 1px 1px #3E7387;
+}
+
+.btn {
   text-transform: uppercase;
   font-weight: bold;
   font-size: 14px;
@@ -22,7 +30,7 @@ body {
   text-shadow: 2px 2px white;
 }
 
-.pattern-title {
+.pattern-title, .language-title {
   color: #3E7387;
 }
 

@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 import { Pattern } from './pattern';
+import { Language } from './language';
 import { PatternRevision } from "./pattern-revision";
 
 const httpOptions = {
@@ -19,10 +20,6 @@ export class PatternService {
   /** GET patterns from the server */
   getPatterns (): Observable<Pattern[]> {
     return this.http.get<Pattern[]>(this.patternUrl);
-  }
-
-  onEnd() : void {
-    console.log("Hide loader!");
   }
 
   /** GET pattern by id */
@@ -47,16 +44,7 @@ export class PatternService {
     return this.http.put(url, data, httpOptions);
   }
 
-  getPatternHistory(id: number): Observable<PatternRevision[]> {
-    const url = `${this.patternUrl}/${id}/history`;
-    return this.http.get<PatternRevision[]>(url);
-  }
-
-  getPatternRevision(id: number, sha: string): Observable<Pattern> {
-    const url = `${this.patternUrl}/${id}/history/${sha}`;
-    return this.http.get<Pattern>(url);
-  }
-
+  /** Creates a new pattern */
   addPattern(name: string, markdown: string): Observable<Pattern> {
     const url = `${this.patternUrl}`;
 
@@ -66,6 +54,18 @@ export class PatternService {
     };
 
     return this.http.post<Pattern>(url, data, httpOptions);
+  }
+
+  /** Gets an array of pattern revisions given its id*/
+  getPatternHistory(id: number): Observable<PatternRevision[]> {
+    const url = `${this.patternUrl}/${id}/history`;
+    return this.http.get<PatternRevision[]>(url);
+  }
+
+  /** Gets a single pattern revision*/
+  getPatternRevision(id: number, sha: string): Observable<Pattern> {
+    const url = `${this.patternUrl}/${id}/history/${sha}`;
+    return this.http.get<Pattern>(url);
   }
 
   getLastModified(revisions: PatternRevision[]) : Date {

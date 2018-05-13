@@ -34,15 +34,30 @@ export class PatternsComponent implements OnInit {
   }
 
   getLastModified() : void {
+    var updated = 1;
+
     for(var i = 0; i < this.patterns.length; i++) {
       var revisions = new Array();
 
       this.patternService.getPatternHistory(this.patterns[i].id)
         .subscribe(function (i, result) {
+          updated++;
+
           revisions = result;
           this.patterns[i].lastModified = this.patternService.getLastModified(revisions).toUTCString();
           this.patterns[i].lastMessage = revisions[0].message;
-          this.loading = false;
+
+          if(updated == this.patterns.length) {
+
+            this.patterns.sort((a, b) => {
+              var date_a = Date.parse(a.lastModified);
+              var date_b = Date.parse(b.lastModified);
+
+              return date_a - date_b;
+            });
+
+            this.loading = false;
+          }
         }.bind(this, i));
     }
   }

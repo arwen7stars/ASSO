@@ -12,9 +12,9 @@ import { PatternService } from "../pattern.service";
   styleUrls: ['./pattern-detail.component.css']
 })
 export class PatternDetailComponent implements OnInit {
+  public loading = true;
   pattern: Pattern;
   revisions: PatternRevision[];
-  public loading = true;
 
   constructor(
     private patternService: PatternService,

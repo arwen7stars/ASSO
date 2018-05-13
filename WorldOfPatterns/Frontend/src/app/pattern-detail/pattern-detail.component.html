@@ -1,8 +1,8 @@
 <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 <div *ngIf="loading == false" class="pattern-detail">
   <span class="float-right">
-    <button class="btn btn-outline-dark edit" routerLink="/pattern/{{pattern.id}}/edit">Edit</button>
-    <button class="btn btn-outline-dark go-back" (click)="goBack()">Go back</button>
+    <button class="btn btn-outline-dark mid-btn edit" routerLink="/pattern/{{pattern.id}}/edit">Edit</button>
+    <button class="btn btn-outline-dark mid-btn go-back" (click)="goBack()">Go back</button>
   </span>
   <h1 class="display-4 pattern-title">{{ pattern.name }}</h1>
   <span class="float-right"><span class="imp-info">Message:</span> "{{pattern.lastMessage}}"</span>
