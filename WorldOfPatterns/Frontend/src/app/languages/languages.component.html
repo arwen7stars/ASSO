@@ -1,5 +1,6 @@
 <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 <div *ngIf="loading == false" class="languages">
+  <span *ngIf="loadingError == false; else errorTemplate">
   <div class="jumbotron jumbotron-fluid">
     <div class="container">
       <button class="btn btn-outline-dark float-right big-btn" routerLink="/addLanguage">Add Language</button>
@@ -19,4 +20,11 @@
     </div>
     <ng-template #no_languages>No languages yet.</ng-template>
   </div>
+  </span>
+
+  <ng-template #errorTemplate>
+    <h2 class="error">
+      {{ this.error }}
+    </h2>
+  </ng-template>
 </div>

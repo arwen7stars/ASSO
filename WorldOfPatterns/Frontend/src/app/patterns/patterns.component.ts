@@ -12,6 +12,9 @@ import { PatternService } from "../pattern.service";
 export class PatternsComponent implements OnInit {
   title : string;
   patterns : Pattern[];
+
+  error : string;
+  loadingError = false;
   public loading = true;
 
   constructor(
@@ -30,14 +33,20 @@ export class PatternsComponent implements OnInit {
       .subscribe(patterns => {
         this.patterns = patterns;
         this.getLastModified();
-      });
+      },
+        error => {
+          this.error = 'Error loading patterns!';
+          console.error(error);
+          this.loading = false;
+          this.loadingError = true;
+          },);
   }
 
   getLastModified() : void {
-    var updated = 1;
+    let updated = 1;
 
-    for(var i = 0; i < this.patterns.length; i++) {
-      var revisions = new Array();
+    for(let i = 0; i < this.patterns.length; i++) {
+      let revisions = new Array();
 
       this.patternService.getPatternHistory(this.patterns[i].id)
         .subscribe(function (i, result) {
@@ -50,15 +59,22 @@ export class PatternsComponent implements OnInit {
           if(updated == this.patterns.length) {
 
             this.patterns.sort((a, b) => {
-              var date_a = Date.parse(a.lastModified);
-              var date_b = Date.parse(b.lastModified);
+              let date_a = Date.parse(a.lastModified);
+              let date_b = Date.parse(b.lastModified);
 
               return date_a - date_b;
             });
 
             this.loading = false;
           }
-        }.bind(this, i));
+
+          }.bind(this, i)),
+          error => {
+            this.error = 'Error loading last modified dates!';
+            console.error(error);
+            this.loading = false;
+            this.loadingError = true;
+          };
     }
   }
 }

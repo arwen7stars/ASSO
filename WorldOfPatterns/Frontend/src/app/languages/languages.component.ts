@@ -10,6 +10,9 @@ import {LanguageService} from "../language.service";
 })
 export class LanguagesComponent implements OnInit {
   languages : Language[];
+
+  error : string;
+  loadingError = false;
   public loading = true;
 
   constructor(private languageService: LanguageService) { }
@@ -28,6 +31,12 @@ export class LanguagesComponent implements OnInit {
         else return 0;
       });
       this.loading = false;
-    });
+    },
+      error => {
+        this.error = 'Error loading languages!';
+        console.error(error);
+        this.loading = false;
+        this.loadingError = true;
+      },);
   }
 }

@@ -4,7 +4,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 import { Pattern } from './pattern';
-import { Language } from './language';
 import { PatternRevision } from "./pattern-revision";
 
 const httpOptions = {

@@ -14,6 +14,8 @@ export class AddLanguageComponent implements OnInit {
   public loading = true;
   public updating = false;
 
+  error : string;
+  loadingError = false;
   @Input() patterns: Pattern[];
   @Input() otherPatterns: Pattern[];
 
@@ -35,7 +37,15 @@ export class AddLanguageComponent implements OnInit {
       .subscribe(patterns => {
         this.otherPatterns = patterns;
         this.loading = false;
-      });
+      },
+        error => {
+          this.error = 'Error loading patterns!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 
   add(pattern: Pattern): void {
@@ -57,6 +67,14 @@ export class AddLanguageComponent implements OnInit {
       .subscribe(() => {
         this.router.navigate(['/languages']);
         this.updating = false;
-      });
+      },
+        error => {
+          this.error = 'Error creating language!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 }

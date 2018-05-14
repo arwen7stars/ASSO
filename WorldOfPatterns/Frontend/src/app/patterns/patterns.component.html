@@ -1,25 +1,33 @@
 <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 <span *ngIf="loading == false" class="wrapper">
-  <div class="jumbotron jumbotron-fluid">
-    <div class="container">
-      <button class="btn btn-outline-dark float-right big-btn" routerLink="/addPattern">Add Pattern</button>
-      <h2 class="display-3 title_jumbotron">{{ title }}</h2>
+  <span *ngIf="loadingError == false; else errorTemplate">
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <button class="btn btn-outline-dark float-right big-btn" routerLink="/addPattern">Add Pattern</button>
+        <h2 class="display-3 title_jumbotron">{{ title }}</h2>
 
-      <p class="lead">Hello! Here you can edit already existing patterns and add new ones.</p>
+        <p class="lead">Hello! Here you can edit already existing patterns and add new ones.</p>
+      </div>
     </div>
-  </div>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4 col-sm-6 col-12" *ngFor="let pattern of patterns">
-        <div class="pattern">
-          <h2><a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a></h2>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-sm-6 col-12" *ngFor="let pattern of patterns">
+          <div class="pattern">
+            <h2><a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a></h2>
 
-          <div class="last-mod-wrapper">
-            <span class="last-mod-label">Last revision: </span> {{ pattern.lastModified }}
+            <div class="last-mod-wrapper">
+              <span class="last-mod-label">Last revision: </span> {{ pattern.lastModified }}
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </span>
+
+  <ng-template #errorTemplate>
+    <h2 class="error">
+      {{ this.error }}
+    </h2>
+  </ng-template>
 </span>

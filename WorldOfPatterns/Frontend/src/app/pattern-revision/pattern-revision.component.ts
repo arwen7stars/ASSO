@@ -11,6 +11,9 @@ import {Pattern} from "../pattern";
 })
 export class PatternRevisionComponent implements OnInit {
   pattern: Pattern;
+
+  error : string;
+  loadingError = false;
   public loading = true;
 
   constructor(
@@ -32,7 +35,15 @@ export class PatternRevisionComponent implements OnInit {
       .subscribe(pattern => {
         this.pattern = pattern;
         this.loading = false;
-      });
+      },
+        error => {
+          this.error = 'Error loading pattern revision!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 
   goBack(): void {

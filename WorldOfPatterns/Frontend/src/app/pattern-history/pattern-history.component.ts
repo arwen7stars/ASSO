@@ -12,6 +12,9 @@ import {PatternRevision} from "../pattern-revision";
 export class PatternHistoryComponent implements OnInit {
   pattern_id : number;
   revisions : PatternRevision[];
+
+  error : string;
+  loadingError = false;
   public loading = true;
 
   constructor(
@@ -35,7 +38,15 @@ export class PatternHistoryComponent implements OnInit {
       .subscribe(revisions => {
         this.revisions = revisions;
         this.loading = false;
-      });
+      },
+        error => {
+          this.error = 'Error loading pattern history!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 
 }

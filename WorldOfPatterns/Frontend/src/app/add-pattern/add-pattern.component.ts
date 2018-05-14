@@ -8,6 +8,8 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./add-pattern.component.css']
 })
 export class AddPatternComponent implements OnInit {
+  error : string;
+  loadingError = false;
   public loading = false;
 
   constructor(
@@ -26,7 +28,15 @@ export class AddPatternComponent implements OnInit {
       .subscribe(() => {
         this.router.navigate(['/patterns']);
         this.loading = false;
-      });
+      },
+        error => {
+          this.error = 'Error creating pattern!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 
 }

@@ -1,53 +1,61 @@
 <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
-<div *ngIf="loading == false" class="edit-pattern">
-  <button (click)="submit()" class="btn btn-outline-dark float-right">Update</button>
-  <h1 class="pattern-title">Edit pattern {{pattern?.name}}</h1>
-  <hr>
-  <div class="form-group row">
-    <label for="pattern-name" class="col-2 col-form-label">Pattern name</label>
-    <div class="col-10">
-      <input
-        [(ngModel)]="pattern.name"
-        class="form-control"
-        id="pattern-name"
-        type="text"
-        placeholder="Pattern name"
-        name="name"
-        #name="ngModel"
-        required
-        disabled
-      />
+<span *ngIf="loading == false">
+  <div class="edit-pattern" *ngIf="loadingError == false; else errorTemplate">
+    <button (click)="submit()" class="btn btn-outline-dark float-right">Update</button>
+    <h1 class="pattern-title">Edit pattern {{pattern?.name}}</h1>
+    <hr>
+    <div class="form-group row">
+      <label for="pattern-name" class="col-2 col-form-label">Pattern name</label>
+      <div class="col-10">
+        <input
+          [(ngModel)]="pattern.name"
+          class="form-control"
+          id="pattern-name"
+          type="text"
+          placeholder="Pattern name"
+          name="name"
+          #name="ngModel"
+          required
+          disabled
+        />
 
-      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
-        <div *ngIf="name?.errors?.required">
-          Name is required.
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+          <div *ngIf="name?.errors?.required">
+            Name is required.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="message" class="col-2 col-form-label">Update message</label>
+      <div class="col-10">
+        <input [(ngModel)]="message" class="form-control" id="message" type="text" placeholder="Updated {{pattern.name}}"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <ngx-loading [show]="updating" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+      <textarea [(ngModel)]="pattern.markdown"
+                class="form-control"
+                rows="10"
+                name="markdown"
+                #markdown="ngModel"
+                placeholder="Introduce information about the pattern"
+                required></textarea>
+
+      <div *ngIf="markdown.invalid && (markdown.dirty || markdown.touched)" class="alert alert-danger">
+        <div *ngIf="markdown?.errors?.required">
+          Information about the pattern is required.
         </div>
       </div>
-
     </div>
   </div>
 
-  <div class="form-group row">
-    <label for="message" class="col-2 col-form-label">Update message</label>
-    <div class="col-10">
-      <input [(ngModel)]="message" class="form-control" id="message" type="text" placeholder="Updated {{pattern.name}}"/>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <ngx-loading [show]="updating" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
-    <textarea [(ngModel)]="pattern.markdown"
-              class="form-control"
-              rows="10"
-              name="markdown"
-              #markdown="ngModel"
-              placeholder="Introduce information about the pattern"
-              required></textarea>
-
-    <div *ngIf="markdown.invalid && (markdown.dirty || markdown.touched)" class="alert alert-danger">
-      <div *ngIf="markdown?.errors?.required">
-        Information about the pattern is required.
-      </div>
-    </div>
-  </div>
-</div>
+  <ng-template #errorTemplate>
+    <h2 class="error">
+      {{ this.error }}
+    </h2>
+  </ng-template>
+</span>

@@ -50,3 +50,9 @@ body {
   font-weight: lighter;
   text-shadow: 0.5px 0.5px #235B6D;
 }
+
+.error {
+  margin: 2em;
+  text-align: center;
+  color: #FF0000;
+}
