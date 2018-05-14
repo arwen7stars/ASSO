@@ -1,0 +1,45 @@
+.container {
+  width: 80%;
+  padding: 1em;
+  margin: 1em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+edit-name {
+  margin-bottom: 1em;
+}
+
+.subtitle {
+  font-weight: bold;
+}
+
+.patterns {
+  list-style-type: none;
+  padding: 0;
+  width: 15em;
+  font-weight: bold;
+}
+
+.patterns li {
+  position: relative;
+  cursor: pointer;
+  background-color: #EEE;
+  padding: .3em 0em;
+  padding-left: 1em;
+  border-radius: 4px;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.delete {
+  margin-top: -5px;
+  height: 2.4em;
+}
+
+.scrollable-box {
+  max-height: 16.5em;
+  overflow-y: auto;
+  width: 20em;
+  margin-bottom: 1em;
+}

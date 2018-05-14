@@ -7,9 +7,12 @@
   <h1 class="display-4 pattern-title">{{ language.name }}</h1>
   <hr>
   <h3 class="subtitle">Language patterns:</h3>
-  <ul *ngFor="let pattern of language.patterns">
-    <li>
-      <a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a>
-    </li>
-  </ul>
+  <span *ngIf="language.patterns.length; else no_patterns">
+    <ul *ngFor="let pattern of language.patterns">
+      <li>
+        <a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a>
+      </li>
+    </ul>
+  </span>
+  <ng-template #no_patterns>No patterns yet.</ng-template>
 </div>

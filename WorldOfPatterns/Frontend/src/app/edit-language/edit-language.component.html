@@ -2,23 +2,24 @@
 
 <div *ngIf="loading == false" class="container">
   <button (click)="submit()" class="btn btn-outline-dark float-right">Update</button>
-  <h1 class="language-title">Edit language</h1>
+  <h1 class="language-title">Edit language {{language.name}}</h1>
   <hr>
 
   <ngx-loading [show]="updating" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
-  
+
   <div class="form-group row edit-name">
-    <label for="pattern-name" class="col-2 col-form-label">Language name</label>
+    <label for="language-name" class="col-2 col-form-label">Language name</label>
     <div class="col-10">
       <input
         [(ngModel)]="language.name"
         class="form-control"
-        id="pattern-name"
+        id="language-name"
         type="text"
-        placeholder="Pattern name"
+        placeholder="Language name"
         name="name"
         #name="ngModel"
         required
+        disabled
       />
 
       <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
@@ -29,10 +30,11 @@
 
     </div>
   </div>
+
   <div class="row">
     <div class="col-sm-6 col-12">
       <h3 class="subtitle">Language patterns:</h3>
-      <div class="scrollable-box">
+      <div class="scrollable-box" *ngIf="language.patterns.length; else no_patterns">
         <ul class="patterns">
           <li *ngFor="let pattern of language.patterns">
             <span>{{pattern.name}}</span>
@@ -40,18 +42,21 @@
           </li>
         </ul>
       </div>
+      <ng-template #no_patterns>No patterns yet.</ng-template>
     </div>
 
     <div class="col-sm-6 col-12 outer-div">
       <h3 class="subtitle">Add patterns:</h3>
 
-      <div class="scrollable-box">
+      <div class="scrollable-box" *ngIf="otherPatterns.length; else no_other_patterns">
         <ul class="patterns">
           <li *ngFor="let pattern of otherPatterns" (click)="add(pattern)">
             <span>{{pattern.name}}</span>
           </li>
         </ul>
       </div>
+
+      <ng-template #no_other_patterns>No patterns left.</ng-template>
     </div>
   </div>
 </div>
