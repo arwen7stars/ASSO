@@ -1,10 +1,10 @@
 USE worldofpatterns;
 
-drop table if exists pattern;
+drop table if exists patternLanguagePattern cascade;
 
-drop table if exists patternLanguage;
+drop table if exists patternLanguage cascade;
 
-drop table if exists patternLanguagePattern;
+drop table if exists pattern cascade;
 
 create table pattern
 (

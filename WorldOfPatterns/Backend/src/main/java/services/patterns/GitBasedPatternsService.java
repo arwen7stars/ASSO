@@ -11,10 +11,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static utils.Configs.*;
-import static utils.Utils.FILE_FORMAT;
-import static utils.Utils.SEPARATOR;
-import static utils.Utils.SPACE;
-import static utils.Utils.SPACE_ENCODED;
+import static utils.Utils.*;
 
 /**
  * Class that performs Patterns services using GitHub
@@ -276,5 +273,32 @@ public class GitBasedPatternsService implements PatternsService{
         catch(Exception ex) {
             throw new PatternLanguageNotFoundException();
         }
+    }
+
+    /**
+     * Search patterns
+     * @param query The keyword to look for
+     * @return A list of patterns that contain the query
+     * @throws PatternLanguageNotFoundException When an error occurs
+     */
+    public ArrayList<Pattern> searchPatterns(String query) throws SearchFailedException {
+        ArrayList<Pattern> patterns = new ArrayList<>();
+
+        try {
+            ArrayList<String> results = gitHubService.searchRepository(query);
+
+            for(String s : results) {
+                String[] split = s.split(SEPARATOR);
+
+                if(split.length == 3) {
+                    patterns.add(new Pattern(Integer.parseInt(split[1]), split[2].replace(FILE_FORMAT, EMPTY_STRING).replace(DOUBLE_QUOTE, EMPTY_STRING)));
+                }
+            }
+        }
+        catch (IOException ex) {
+            throw new SearchFailedException();
+        }
+
+        return patterns;
     }
 }

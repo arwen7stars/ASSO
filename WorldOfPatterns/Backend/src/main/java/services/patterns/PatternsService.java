@@ -3,10 +3,7 @@ package services.patterns;
 import patterns.Pattern;
 import patterns.PatternLanguage;
 import services.git.CommitBasicInfo;
-import utils.exceptions.PatternCreationFailedException;
-import utils.exceptions.PatternLanguageCreationFailedException;
-import utils.exceptions.PatternLanguageNotFoundException;
-import utils.exceptions.PatternNotFoundException;
+import utils.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,4 +28,6 @@ public interface PatternsService {
     ArrayList<PatternLanguage> getPatternLanguages() throws PatternLanguageNotFoundException;
 
     PatternLanguage updatePatternLanguage(int id, ArrayList<Integer> ids) throws PatternLanguageNotFoundException;
+
+    ArrayList<Pattern> searchPatterns(String query) throws SearchFailedException;
 }
