@@ -163,6 +163,17 @@ public class PatternsHandler {
         return service.updatePatternLanguage(id, patternLanguageContent.getIds());
     }
 
+    /**
+     * Search patterns
+     * @param query The query to use in the search
+     * @return All the patterns obtained in the search
+     * @throws SearchFailedException When an error occurs
+     */
+    @RequestMapping(value = "/patterns/search/{query}", method = RequestMethod.GET)
+    public List<Pattern> searchPatterns(@PathVariable("query") String query) throws SearchFailedException {
+        return service.searchPatterns(query);
+    }
+
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value());

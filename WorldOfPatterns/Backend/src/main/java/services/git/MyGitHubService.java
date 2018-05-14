@@ -1,12 +1,20 @@
 package services.git;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.*;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import utils.RestClient;
+import utils.exceptions.SearchFailedException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -16,8 +24,13 @@ import static utils.Utils.*;
  * Class to connect with GitHub
  */
 public class MyGitHubService {
+    private static final String SEARCH_URL = "https://api.github.com/search/code?q=";
+    private static final String REPOSITORY = "+repo:";
     private static final String MARKDOWN = "markdown";
     private static final String HEAD_MASTER = "heads/master";
+
+    private static final String ITEMS = "items";
+    private static final String PATH = "path";
 
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 
@@ -221,6 +234,37 @@ public class MyGitHubService {
 
         for(RepositoryContents c: contents) {
             res = new String(Base64.decodeBase64(c.getContent().getBytes()));
+        }
+
+        return res;
+    }
+
+    /**
+     * Search a repository based on a query
+     * @param query The query to filter the search
+     * @return A list of paths to files relevant to the search
+     * @throws IOException When an error occurs
+     */
+    public ArrayList<String> searchRepository(String query) throws IOException {
+        ArrayList<String> res = new ArrayList<>();
+
+        ResponseEntity<String> response = RestClient.get(SEARCH_URL + query + REPOSITORY + user + SEPARATOR + repositoryName);
+
+        if(response.getStatusCode() != HttpStatus.OK) {
+            throw new SearchFailedException();
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode actualObj = mapper.readTree(response.getBody());
+
+        JsonNode items = actualObj.get(ITEMS);
+
+        if (items.isArray()) {
+            for (final JsonNode node : items) {
+                String path = node.get(PATH).toString();
+
+                res.add(path);
+            }
         }
 
         return res;
