@@ -12,10 +12,19 @@ public class Pattern
     private String html;
     private String markdown;
 
+    private String lastModified;
+
     public Pattern(int id, String name)
     {
         this.id = id;
         this.name = name;
+    }
+
+    public Pattern(int id, String name, String lastModified)
+    {
+        this.id = id;
+        this.name = name;
+        this.lastModified = lastModified;
     }
 
     public Pattern(int id, String name, String html, String markdown)
@@ -48,6 +57,10 @@ public class Pattern
         return html;
     }
 
+    public String getLastModified() {
+        return lastModified;
+    }
+
     public void setHtml(String html)
     {
         this.html = html;
@@ -61,5 +74,9 @@ public class Pattern
     public void setMarkdown(String markdown)
     {
         this.markdown = markdown;
+    }
+
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
     }
 }

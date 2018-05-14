@@ -84,8 +84,8 @@ public class MyGitHubService {
      * @return List of file names inside the directory at path
      * @throws IOException When the path is invalid
      */
-    public Map<Integer, String> getRepositoryContents(String path) throws IOException {
-        Map<Integer, String> res = new HashMap<>();
+    public ArrayList<GitFileBasicInfo> getRepositoryContents(String path) throws IOException {
+        ArrayList<GitFileBasicInfo> res = new ArrayList<>();
 
         List<RepositoryContents> contents = contentsService.getContents(repository, path);
 
@@ -100,7 +100,11 @@ public class MyGitHubService {
 
                 for(RepositoryContents subc: subcontents) {
                     String name = subc.getName();
-                    res.put(Integer.parseInt(id), name.replace(FILE_FORMAT, EMPTY_STRING));
+
+                    List<CommitBasicInfo> info = getRepositoryCommits(path + id + SEPARATOR);
+                    String date = info.get(0).getDate();
+
+                    res.add(new GitFileBasicInfo(Integer.parseInt(id), name.replace(FILE_FORMAT, EMPTY_STRING), date));
                 }
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());

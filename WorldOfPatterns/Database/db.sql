@@ -9,7 +9,8 @@ drop table if exists pattern cascade;
 create table pattern
 (
   id serial primary key,
-  name text not null
+  name text not null,
+  lastModified timestamp not null default current_timestamp()
 );
 
 create table patternLanguage

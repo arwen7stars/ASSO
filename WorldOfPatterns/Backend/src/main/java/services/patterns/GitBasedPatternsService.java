@@ -3,6 +3,7 @@ package services.patterns;
 import patterns.Pattern;
 import patterns.PatternLanguage;
 import services.git.CommitBasicInfo;
+import services.git.GitFileBasicInfo;
 import services.git.MyGitHubService;
 import utils.exceptions.*;
 
@@ -106,8 +107,9 @@ public class GitBasedPatternsService implements PatternsService{
             Pattern pattern = getPattern(id);
             String url = encodeUrl(PATTERNS_PATH + id + SEPARATOR + pattern.getName() + FILE_FORMAT);
             gitHubService.commit(url, markdown, message);
+            mySqlService.updatePattern(id);
             return getPattern(id);
-        } catch (IOException ex) {
+        } catch (IOException | SQLException ex) {
             throw new PatternNotFoundException();
         }
     }
@@ -185,10 +187,10 @@ public class GitBasedPatternsService implements PatternsService{
         System.out.println(START_LOADING);
 
         try {
-            Map<Integer, String> res = gitHubService.getRepositoryContents(PATTERNS_PATH);
-            for(Map.Entry<Integer, String> entry : res.entrySet()) {
+            ArrayList<GitFileBasicInfo> res = gitHubService.getRepositoryContents(PATTERNS_PATH);
+            for(GitFileBasicInfo info : res) {
                 try {
-                    mySqlService.createPattern(entry.getKey(), entry.getValue());
+                    mySqlService.createPattern(info.getId(), info.getName(), info.getDate());
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }

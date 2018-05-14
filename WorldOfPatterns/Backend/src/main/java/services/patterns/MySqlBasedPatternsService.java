@@ -18,11 +18,12 @@ public class MySqlBasedPatternsService
 {
     //Queries
     private static final String CREATE_PATTERN_QUERY = "insert into pattern(name) values(?);";
-    private static final String CREATE_PATTERN_WITH_ID_QUERY = "insert into pattern(id,name) values(?,?);";
+    private static final String CREATE_PATTERN_WITH_ID_QUERY = "insert into pattern(id,name,lastModified) values(?,?,?);";
     private static final String GET_LAST_INSERTED_ID = "SELECT LAST_INSERT_ID() AS id;";
     private static final String GET_PATTERNS_QUERY = "select * from pattern;";
     private static final String GET_PATTERN_QUERY = "select * from pattern where id = ?;";
     private static final String DELETE_PATTERN_QUERY = "delete from pattern where id = ?";
+    private static final String UPDATE_PATTERN_QUERY = "update pattern set lastModified = current_timestamp() where id = ?;";
 
     private static final String CREATE_PATTERN_LANGUAGE_QUERY = "insert into patternLanguage(name) values(?);";
     private static final String GET_PATTERN_LANGUAGE_QUERY = "select * from patternLanguage where id = ?;";
@@ -40,6 +41,7 @@ public class MySqlBasedPatternsService
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final String PATTERN_ID = "idPattern";
+    private static final String LAST_MODIFIED = "lastModified";
 
     //Database object
     private DatabaseService database;
@@ -84,13 +86,30 @@ public class MySqlBasedPatternsService
     }
 
     /**
+     * Update a pattern
+     * @param id The id of the pattern
+     * @return The id of the pattern created
+     * @throws Exception When the pattern cannot be created
+     */
+    public void updatePattern(int id) throws SQLException
+    {
+        Connection con = database.getConnection();
+
+        PreparedStatement stmt = con.prepareStatement(UPDATE_PATTERN_QUERY);
+        stmt.setInt(1, id);
+        stmt.execute();
+
+        database.closeConnection(con);
+    }
+
+    /**
      * Create a pattern
      * @param id The id of the new pattern
      * @param name The name of the new pattern
      * @return The id of the pattern created
      * @throws Exception When the pattern cannot be created
      */
-    public int createPattern(int id, String name) throws Exception
+    public int createPattern(int id, String name, String lastModified) throws Exception
     {
         int res;
 
@@ -99,6 +118,7 @@ public class MySqlBasedPatternsService
         PreparedStatement stmt = con.prepareStatement(CREATE_PATTERN_WITH_ID_QUERY);
         stmt.setInt(1, id);
         stmt.setString(2, name);
+        stmt.setString(3, lastModified);
         stmt.execute();
 
         PreparedStatement stmt2 = con.prepareStatement(GET_LAST_INSERTED_ID);
@@ -132,7 +152,7 @@ public class MySqlBasedPatternsService
 
         while(rs.next())
         {
-            patterns.add(new Pattern(rs.getInt(ID), rs.getString(NAME)));
+            patterns.add(new Pattern(rs.getInt(ID), rs.getString(NAME), rs.getString(LAST_MODIFIED)));
         }
 
         database.closeConnection(con);
@@ -141,7 +161,7 @@ public class MySqlBasedPatternsService
     }
 
     /**
-     * Get a patter by id
+     * Get a pattern by id
      * @param id The id of the pattern
      * @return The pattern
      * @throws SQLException When an error occurs
