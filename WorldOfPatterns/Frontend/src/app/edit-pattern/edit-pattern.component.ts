@@ -12,6 +12,9 @@ import {Pattern} from "../pattern";
 export class EditPatternComponent implements OnInit {
   @Input() pattern: Pattern;
   @Input() message: string;
+
+  error : string;
+  loadingError = false;
   public loading = true;
   public updating = false;
 
@@ -33,7 +36,15 @@ export class EditPatternComponent implements OnInit {
       .subscribe(pattern => {
         this.pattern = pattern;
         this.loading = false;
-      });
+      },
+        error => {
+          this.error = 'Error loading pattern!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 
   submit(): void {
@@ -43,6 +54,14 @@ export class EditPatternComponent implements OnInit {
         this.pattern = pattern;
         this.location.back();
         this.updating = false;
-      });
+      },
+        error => {
+          this.error = 'Error updating pattern!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 }

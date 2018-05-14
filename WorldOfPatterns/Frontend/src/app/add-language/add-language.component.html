@@ -1,52 +1,60 @@
 <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 
-<div *ngIf="loading == false" class="container">
-  <button (click)="submit(languageName.value)" class="btn btn-outline-dark float-right">Add</button>
-  <h1 class="language-title">Add language</h1>
-  <hr>
+<div *ngIf="loading == false">
+  <div class="container" *ngIf="loadingError == false; else errorTemplate">
+    <button (click)="submit(languageName.value)" class="btn btn-outline-dark float-right">Add</button>
+    <h1 class="language-title">Add language</h1>
+    <hr>
 
-  <ngx-loading [show]="updating" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+    <ngx-loading [show]="updating" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 
-  <div class="form-group row edit-name">
-    <label for="language-name" class="col-2 col-form-label">Language name</label>
-    <div class="col-10">
-      <input
-        #languageName
-        class="form-control"
-        id="language-name"
-        type="text"
-        placeholder="Language name"
-        required
-      />
+    <div class="form-group row edit-name">
+      <label for="language-name" class="col-2 col-form-label">Language name</label>
+      <div class="col-10">
+        <input
+          #languageName
+          class="form-control"
+          id="language-name"
+          type="text"
+          placeholder="Language name"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 col-12">
+        <h3 class="subtitle">Language patterns:</h3>
+        <div class="scrollable-box" *ngIf="patterns.length; else no_patterns">
+          <ul class="patterns">
+            <li *ngFor="let pattern of patterns">
+              <span>{{pattern.name}}</span>
+              <button class="btn btn-outline-dark delete float-right" title="delete hero" (click)="delete(pattern)">x</button>
+            </li>
+          </ul>
+        </div>
+        <ng-template #no_patterns>No patterns yet.</ng-template>
+      </div>
+
+      <div class="col-sm-6 col-12 outer-div">
+        <h3 class="subtitle">Add patterns:</h3>
+
+        <div class="scrollable-box" *ngIf="otherPatterns.length; else no_other_patterns">
+          <ul class="patterns">
+            <li *ngFor="let pattern of otherPatterns" (click)="add(pattern)">
+              <span>{{pattern.name}}</span>
+            </li>
+          </ul>
+        </div>
+
+        <ng-template #no_other_patterns>No patterns left.</ng-template>
+      </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-sm-6 col-12">
-      <h3 class="subtitle">Language patterns:</h3>
-      <div class="scrollable-box" *ngIf="patterns.length; else no_patterns">
-        <ul class="patterns">
-          <li *ngFor="let pattern of patterns">
-            <span>{{pattern.name}}</span>
-            <button class="btn btn-outline-dark delete float-right" title="delete hero" (click)="delete(pattern)">x</button>
-          </li>
-        </ul>
-      </div>
-      <ng-template #no_patterns>No patterns yet.</ng-template>
-    </div>
-
-    <div class="col-sm-6 col-12 outer-div">
-      <h3 class="subtitle">Add patterns:</h3>
-
-      <div class="scrollable-box" *ngIf="otherPatterns.length; else no_other_patterns">
-        <ul class="patterns">
-          <li *ngFor="let pattern of otherPatterns" (click)="add(pattern)">
-            <span>{{pattern.name}}</span>
-          </li>
-        </ul>
-      </div>
-
-      <ng-template #no_other_patterns>No patterns left.</ng-template>
-    </div>
-  </div>
+  <ng-template #errorTemplate>
+    <h2 class="error">
+      {{ this.error }}
+    </h2>
+  </ng-template>
 </div>

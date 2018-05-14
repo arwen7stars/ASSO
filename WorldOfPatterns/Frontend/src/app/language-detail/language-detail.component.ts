@@ -10,8 +10,11 @@ import {Language} from "../language";
   styleUrls: ['./language-detail.component.css']
 })
 export class LanguageDetailComponent implements OnInit {
-  public loading = true;
   language: Language;
+
+  error : string;
+  loadingError = false;
+  public loading = true;
 
   constructor(
     private languageService: LanguageService,
@@ -34,7 +37,15 @@ export class LanguageDetailComponent implements OnInit {
       this.language = language;
       console.log(this.language.patterns);
       this.loading = false;
-    });
+    },
+      error => {
+        this.error = 'Error loading language!';
+
+        console.error(error);
+
+        this.loading = false;
+        this.loadingError = true;
+      },);
   }
 
 }

@@ -12,9 +12,12 @@ import { PatternService } from "../pattern.service";
   styleUrls: ['./pattern-detail.component.css']
 })
 export class PatternDetailComponent implements OnInit {
-  public loading = true;
   pattern: Pattern;
   revisions: PatternRevision[];
+
+  error : string;
+  loadingError = false;
+  public loading = true;
 
   constructor(
     private patternService: PatternService,
@@ -43,12 +46,20 @@ export class PatternDetailComponent implements OnInit {
     this.patternService.getPatternHistory(this.pattern.id)
       .subscribe(revisions => {
         this.revisions = revisions;
-        var date = this.patternService.getLastModified(revisions);
+        let date = this.patternService.getLastModified(revisions);
 
         this.pattern.lastModified = this.patternService.timeSince(date);
         this.pattern.lastMessage = this.revisions[0].message;
         this.loading = false;
-      });
+      },
+        error => {
+          this.error = 'Error loading pattern!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 
 

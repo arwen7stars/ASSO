@@ -14,6 +14,9 @@ import {PatternService} from "../pattern.service";
 export class EditLanguageComponent implements OnInit {
   @Input() language: Language;
   @Input() otherPatterns: Pattern[];
+
+  error : string;
+  loadingError = false;
   public loading = true;
   public updating = false;
 
@@ -37,7 +40,15 @@ export class EditLanguageComponent implements OnInit {
       .subscribe(language => {
         this.language = language;
         this.getPatterns();
-      });
+      },
+        error => {
+          this.error = 'Error loading language!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 
   getPatterns(): void {
@@ -45,8 +56,8 @@ export class EditLanguageComponent implements OnInit {
       .subscribe(patterns => {
 
         patterns.forEach((pattern) => {
-          var found = false;
-          for(var i = 0; i < this.language.patterns.length; i++) {
+          let found = false;
+          for(let i = 0; i < this.language.patterns.length; i++) {
             if (this.language.patterns[i].id == pattern.id) {
               found = true;
             }
@@ -57,7 +68,15 @@ export class EditLanguageComponent implements OnInit {
         });
 
         this.loading = false;
-      });
+      },
+        error => {
+          this.error = 'Error loading patterns!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+          },);
   }
 
   add(pattern: Pattern): void {
@@ -72,7 +91,7 @@ export class EditLanguageComponent implements OnInit {
 
   submit(): void {
     this.updating = true;
-    var ids = [];
+    let ids = [];
     this.language.patterns.forEach((pattern) => { ids.push(pattern.id) });
 
     this.languageService.updateLanguage(this.language.id, this.language.name, ids)
@@ -80,7 +99,15 @@ export class EditLanguageComponent implements OnInit {
         this.language = language;
         this.location.back();
         this.updating = false;
-      });
+      },
+        error => {
+          this.error = 'Error updating language!';
+
+          console.error(error);
+
+          this.loading = false;
+          this.loadingError = true;
+        },);
   }
 
 }
