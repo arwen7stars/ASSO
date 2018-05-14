@@ -1,3 +1,57 @@
-<p>
-  edit-language works!
-</p>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+
+<div *ngIf="loading == false" class="container">
+  <button (click)="submit()" class="btn btn-outline-dark float-right">Update</button>
+  <h1 class="language-title">Edit language</h1>
+  <hr>
+
+  <ngx-loading [show]="updating" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+  
+  <div class="form-group row edit-name">
+    <label for="pattern-name" class="col-2 col-form-label">Language name</label>
+    <div class="col-10">
+      <input
+        [(ngModel)]="language.name"
+        class="form-control"
+        id="pattern-name"
+        type="text"
+        placeholder="Pattern name"
+        name="name"
+        #name="ngModel"
+        required
+      />
+
+      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+        <div *ngIf="name?.errors?.required">
+          Name is required.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-12">
+      <h3 class="subtitle">Language patterns:</h3>
+      <div class="scrollable-box">
+        <ul class="patterns">
+          <li *ngFor="let pattern of language.patterns">
+            <span>{{pattern.name}}</span>
+            <button class="btn btn-outline-dark delete float-right" title="delete hero" (click)="delete(pattern)">x</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-12 outer-div">
+      <h3 class="subtitle">Add patterns:</h3>
+
+      <div class="scrollable-box">
+        <ul class="patterns">
+          <li *ngFor="let pattern of otherPatterns" (click)="add(pattern)">
+            <span>{{pattern.name}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

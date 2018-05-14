@@ -1,5 +1,6 @@
 <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 <div *ngIf="loading == false" class="edit-pattern">
+  <button (click)="submit()" class="btn btn-outline-dark float-right">Update</button>
   <h1 class="pattern-title">Edit pattern {{pattern?.name}}</h1>
   <hr>
   <div class="form-group row">
@@ -49,6 +50,4 @@
       </div>
     </div>
   </div>
-
-  <button (click)="submit()" class="btn btn-outline-dark">Update</button>
 </div>
