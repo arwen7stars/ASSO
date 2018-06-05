@@ -1,0 +1,22 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+<span *ngIf="loading == false">
+  <span *ngIf="patterns.length > 0; else emptyRes">
+    <div class="patterns" *ngIf="loadingError == false; else errorTemplate">
+        <h1 class="pattern-title">Search results</h1>
+        <ul class="list-group" *ngFor="let pattern of patterns">
+          <li class="list-group-item">
+            <a routerLink="/pattern/{{pattern.id}}">{{pattern.name}}</a>
+          </li>
+        </ul>
+    </div>
+
+    <ng-template #errorTemplate>
+      <h2 class="error">
+        {{ this.error }}
+      </h2>
+    </ng-template>
+  </span>
+  <ng-template #emptyRes>
+  <h5 class="no-res">No search results.</h5>
+  </ng-template>
+</span>

@@ -8,7 +8,6 @@ import { LoadingModule } from 'ngx-loading';
 import { PatternService }          from './pattern.service';
 
 import { AppComponent } from './app.component';
-import { PatternSearchComponent } from './pattern-search/pattern-search.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { PatternsComponent } from './patterns/patterns.component';
 import { AppRoutingModule } from './/app-routing.module';
@@ -22,12 +21,12 @@ import { LanguageDetailComponent } from './language-detail/language-detail.compo
 import {LanguageService} from "./language.service";
 import { AddLanguageComponent } from './add-language/add-language.component';
 import { EditLanguageComponent } from './edit-language/edit-language.component';
+import { SearchComponent } from './search/search.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    PatternSearchComponent,
     NavbarComponent,
     PatternsComponent,
     PatternDetailComponent,
@@ -38,7 +37,8 @@ import { EditLanguageComponent } from './edit-language/edit-language.component';
     LanguagesComponent,
     LanguageDetailComponent,
     AddLanguageComponent,
-    EditLanguageComponent
+    EditLanguageComponent,
+    SearchComponent
   ],
   imports: [
     AlertModule.forRoot(),

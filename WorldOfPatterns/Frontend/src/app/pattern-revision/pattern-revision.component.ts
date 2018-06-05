@@ -15,6 +15,7 @@ export class PatternRevisionComponent implements OnInit {
   error : string;
   loadingError = false;
   public loading = true;
+  public updating = false;
 
   constructor(
     private patternService: PatternService,
@@ -44,6 +45,23 @@ export class PatternRevisionComponent implements OnInit {
           this.loading = false;
           this.loadingError = true;
         },);
+  }
+
+  revert(): void {
+    let sha = this.route.snapshot.paramMap.get('sha');
+    let message = "Reverted back to " + sha;
+    this.patternService.updatePattern(this.pattern.name, this.pattern.id, this.pattern.markdown, message)
+      .subscribe(() => {
+        this.location.back();
+        },
+        error => {
+          this.error = 'Error updating pattern!';
+
+          console.error(error);
+
+          this.updating = false;
+          this.loadingError = true;
+          },);
   }
 
   goBack(): void {

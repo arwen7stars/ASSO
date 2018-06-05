@@ -11,6 +11,7 @@ import {LanguagesComponent} from "./languages/languages.component";
 import {LanguageDetailComponent} from "./language-detail/language-detail.component";
 import {AddLanguageComponent} from "./add-language/add-language.component";
 import {EditLanguageComponent} from "./edit-language/edit-language.component";
+import {SearchComponent} from "./search/search.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/patterns', pathMatch: 'full' },
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'language/:id', component: LanguageDetailComponent },
   { path: 'language/:id/edit', component: EditLanguageComponent },
   { path: 'addLanguage', component: AddLanguageComponent },
+  { path: 'search/:query', component: SearchComponent }
 ];
 
 @NgModule({

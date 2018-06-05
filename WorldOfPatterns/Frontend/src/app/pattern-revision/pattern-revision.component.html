@@ -1,12 +1,15 @@
 <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 <span *ngIf="loading == false">
+  <ngx-loading [show]="updating" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+  <span *ngIf="updating == false">
   <div *ngIf="loadingError == false; else errorTemplate" class="pattern-revision">
-    <span class="float-right">
-      <button class="btn btn-outline-dark go-back mid-btn" (click)="goBack()">Go back</button>
-    </span>
-    <h1 class="display-4 pattern-title">{{ pattern.name }}</h1>
-    <hr>
-    <div [innerHTML]="pattern.html"></div>
+      <span class="float-right">
+        <button class="btn btn-outline-dark go-back mid-btn" (click)="revert()">Revert</button>
+        <button class="btn btn-outline-dark go-back mid-btn" (click)="goBack()">Go back</button>
+      </span>
+      <h1 class="display-4 pattern-title">{{ pattern.name }}</h1>
+      <hr>
+      <div [innerHTML]="pattern.html"></div>
   </div>
 
   <ng-template #errorTemplate>
@@ -14,4 +17,5 @@
       {{ this.error }}
     </h2>
   </ng-template>
+  </span>
 </span>

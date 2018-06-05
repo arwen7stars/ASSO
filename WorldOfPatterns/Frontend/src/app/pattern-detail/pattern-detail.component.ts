@@ -39,7 +39,15 @@ export class PatternDetailComponent implements OnInit {
     this.patternService.getPattern(id).subscribe(pattern => {
       this.pattern = pattern;
       this.getRevisionHistory();
-    });
+    },
+      error => {
+        this.error = 'Error loading pattern!';
+
+        console.error(error);
+
+        this.loading = false;
+        this.loadingError = true;
+      },);
   }
 
   getRevisionHistory(): void {
@@ -53,7 +61,7 @@ export class PatternDetailComponent implements OnInit {
         this.loading = false;
       },
         error => {
-          this.error = 'Error loading pattern!';
+          this.error = 'Error loading pattern history!';
 
           console.error(error);
 

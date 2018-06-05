@@ -67,6 +67,11 @@ export class PatternService {
     return this.http.get<Pattern>(url);
   }
 
+  searchPattern(query: string) : Observable<Pattern[]> {
+    const url = `${this.patternUrl}/search/${query}`;
+    return this.http.get<Pattern[]>(url);
+  }
+
   getLastModified(revisions: PatternRevision[]) : Date {
     let revision = revisions[0];            // the first element has the latest date
 
