@@ -10,6 +10,8 @@ import services.patterns.PatternsService;
  */
 public class GitBasedServicesFactory implements ServicesFactory
 {
+    private static GitBasedServicesFactory factory;
+
     protected GitBasedServicesFactory() {}
 
     public PatternsService createPatternsService() {
@@ -18,6 +20,10 @@ public class GitBasedServicesFactory implements ServicesFactory
 
     public static ServicesFactory instance()
     {
-        return new GitBasedServicesFactory();
+        if(factory == null) {
+            factory = new GitBasedServicesFactory();
+        }
+
+        return factory;
     }
 }
